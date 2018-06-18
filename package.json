@@ -1,0 +1,19 @@
+{
+  "name": "companion-module-pvp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bitfocus/companion-module-pvp.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bitfocus/companion-module-pvp/issues"
+  },
+  "homepage": "https://github.com/bitfocus/companion-module-pvp#readme"
+}
