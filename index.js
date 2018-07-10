@@ -45,6 +45,13 @@ instance.prototype.config_fields = function () {
 	var self = this;
 	return [
 		{
+			type: 'text',
+			id: 'info',
+			width: 12,
+			label: 'Information',
+			value: 'This module will control Renewed Vision PVP ver 3.0'
+		},
+		{
 			type: 'textinput',
 			id: 'host',
 			label: 'Target IP',
