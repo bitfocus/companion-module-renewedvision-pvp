@@ -11,7 +11,7 @@ For over a decade, productions and installations have used ProVideoPlayer for pl
 We currently support the following actions:
 
 Action|	What it does.
--------|–––––––––––––––––
+-------|------------------
 Clear Layer|	Clears the given layer
 Mute Layer|	Mutes the Audio on the given layer
 Unmute Layer|	Unmutes the given layer
