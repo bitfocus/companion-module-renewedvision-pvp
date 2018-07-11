@@ -28,4 +28,5 @@ Mute Workspace|	Mutes the Audio on the workspace
 Unmute Workspace|	Unmutes the Audio on the Workspace
 Hide Workspace|	Hides the Workspace
 Unhide Workspace|	Unhides the Workspace
+
 For additional actions please raise a feature request at [github](https://github.com/bitfocus/companion)
