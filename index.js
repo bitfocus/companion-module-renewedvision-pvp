@@ -320,17 +320,5 @@ instance.prototype.action = function(action) {
 
 };
 
-
-
-
-
-
-
-instance.module_info = {
-	label: 'PVP',
-	id: 'pvp',
-	version: '0.0.1'
-};
-
 instance_skel.extendedBy(instance);
 exports = module.exports = instance;

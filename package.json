@@ -1,6 +1,11 @@
 {
-  "name": "companion-module-pvp",
+  "name": "pvp",
   "version": "1.0.0",
+	"api_version": "1.0.0",
+	"keywords": [ "Software" ],
+	"manufacturer": "Renewed Vision",
+	"product": "PVP 3",
+	"shortname": "pvp",
   "description": "Module to control Renewed vision PVP 3.0",
   "main": "index.js",
   "scripts": {
@@ -10,7 +15,7 @@
     "type": "git",
     "url": "git+https://github.com/bitfocus/companion-module-pvp.git"
   },
-  "author": "Per Roine",
+  "author": "Per Røine <per.roine@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/bitfocus/companion-module-pvp/issues"
