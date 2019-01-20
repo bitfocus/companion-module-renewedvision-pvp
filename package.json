@@ -1,24 +1,26 @@
 {
-  "name": "pvp",
-  "version": "1.0.0",
+	"name": "pvp",
+	"version": "1.0.1",
 	"api_version": "1.0.0",
-	"keywords": [ "Software" ],
+	"keywords": [
+		"Software"
+	],
 	"manufacturer": "Renewed Vision",
 	"product": "PVP 3",
 	"shortname": "pvp",
-  "description": "Module to control Renewed vision PVP 3.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bitfocus/companion-module-pvp.git"
-  },
-  "author": "Per Røine <per.roine@gmail.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/bitfocus/companion-module-pvp/issues"
-  },
-  "homepage": "https://github.com/bitfocus/companion-module-pvp#readme"
+	"description": "Module to control Renewed vision PVP 3.0",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/bitfocus/companion-module-pvp.git"
+	},
+	"author": "Per Røine <per.roine@gmail.com>",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/bitfocus/companion-module-pvp/issues"
+	},
+	"homepage": "https://github.com/bitfocus/companion-module-pvp#readme"
 }
