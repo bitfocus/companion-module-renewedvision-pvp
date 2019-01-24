@@ -87,79 +87,79 @@ instance.prototype.actions = function(system) {
 			options: [
 				{
 					type: 'textinput',
-					label: 'layer id',
+					label: 'Layer ID',
 					id: 'idx',
-					default: '1'
+					default: '0'
 				}
 			]
 		},
 
 		'muteLayer': {
-			label: 'Mute Layer (id)',
+			label: 'Mute Layer',
 			options: [
 				{
 					type: 'textinput',
-					label: 'layer id',
+					label: 'Layer ID',
 					id: 'idx',
-					default: '1'
+					default: '0'
 				}
 			]
 		},
 
 		'unmuteLayer': {
-			label: 'Unmute Layer (id)',
+			label: 'Unmute Layer',
 			options: [
 				{
 					type: 'textinput',
-					label: 'layer id',
+					label: 'Layer ID',
 					id: 'idx',
-					default: '1'
+					default: '0'
 				}
 			]
 		},
 
 		'selectLayer': {
-			label: 'Select Layer (id)',
+			label: 'Select Layer',
 			options: [
 				{
 					type: 'textinput',
-					label: 'layer id',
+					label: 'Layer ID',
 					id: 'idx',
-					default: '1'
+					default: '0'
 				}
 			]
 		},
 
 		'hideLayer': {
-			label: 'Hide Layer (id)',
+			label: 'Hide Layer',
 			options: [
 				{
 					type: 'textinput',
-					label: 'layer id',
+					label: 'Layer ID',
 					id: 'idx',
-					default: '1'
+					default: '0'
 				}
 			]
 		},
 
 		'unhideLayer': {
-			label: 'Unhide Layer (id)',
+			label: 'Unhide Layer',
 			options: [
 				{
 					type: 'textinput',
-					label: 'layer id',
+					label: 'Layer ID',
 					id: 'idx',
-					default: '1'
+					default: '0'
 				}
 			]
 		},
 
 		'selectPL': {
-			label: 'Select Playlist (id)',
+			label: 'Select Playlist',
 			options: [
 				{
 					type: 'textinput',
-					label: 'Playlist id',
+					label: 'Playlist ID',
 					id: 'pl',
 					default: '1'
 				}
@@ -167,11 +167,11 @@ instance.prototype.actions = function(system) {
 		},
 
 		'triggerCue': {
-			label: 'Trigger Cue (id)',
+			label: 'Trigger Cue',
 			options: [
 				{
 					type: 'textinput',
-					label: 'Cue id',
+					label: 'Cue ID',
 					id: 'cue',
 					default: '1'
 				}
@@ -179,11 +179,11 @@ instance.prototype.actions = function(system) {
 		},
 
 		'triggerPL': {
-			label: 'Trigger Playlist (id)',
+			label: 'Trigger Playlist',
 			options: [
 				{
 					type: 'textinput',
-					label: 'Playlist Id',
+					label: 'Playlist ID',
 					id: 'pl',
 					default: '1'
 				}
@@ -191,17 +191,17 @@ instance.prototype.actions = function(system) {
 		},
 
 		'triggerCuePL': {
-			label: 'Trigger Cue in Playlist (Playlist ID) (Cue ID)',
+			label: 'Trigger Cue in Playlist',
 			options: [
 				{
 					type: 'textinput',
-					label: 'Playlist id',
+					label: 'Playlist ID',
 					id: 'pl',
 					default: '1'
 				},
 				{
 					type: 'textinput',
-					label: 'Cue Id',
+					label: 'Cue ID',
 					id: 'cue',
 					default: '1'
 				}
@@ -209,25 +209,25 @@ instance.prototype.actions = function(system) {
 		},
 
 		'triggerCuePLLay': {
-			label: 'Trigger Cue in Playlist on Layer (Layer ID) (Playlist ID) (Cue ID)',
+			label: 'Trigger Cue in Playlist on Layer',
 			options: [
 				{
 					type: 'textinput',
-					label: 'Playlist id',
+					label: 'Playlist ID',
 					id: 'pl',
 					default: '1'
 				},
 				{
 					type: 'textinput',
-					label: 'Cue Id',
+					label: 'Cue ID',
 					id: 'cue',
 					default: '1'
 				},
 				{
 					type: 'textinput',
-					label: 'Layer Id',
+					label: 'Layer ID',
 					id: 'idx',
-					default: '1'
+					default: '0'
 				}
 			]
 		},
@@ -362,7 +362,7 @@ instance.prototype.action = function(action) {
 			body = {
 				value: action.options.lpn
 			};
-		break;
+			break;
 
 	}
 
