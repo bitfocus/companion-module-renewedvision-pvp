@@ -31,6 +31,8 @@ instance.prototype.updateConfig = function(config) {
 
 	self.config = config;
 };
+
+
 instance.prototype.init = function() {
 	var self = this;
 
@@ -39,6 +41,7 @@ instance.prototype.init = function() {
 	debug = self.debug;
 	log = self.log;
 };
+
 
 // Return config fields for web config
 instance.prototype.config_fields = function () {
@@ -68,15 +71,17 @@ instance.prototype.config_fields = function () {
 	]
 };
 
+
 // When module gets deleted
 instance.prototype.destroy = function() {
 	var self = this;
 	debug("destroy");
 };
 
+
 instance.prototype.actions = function(system) {
 	var self = this;
-	self.system.emit('instance_actions', self.id, {
+	self.setActions({
 		'clearLayer': {
 			label: 'Clear Layer (id)',
 			options: [
@@ -100,6 +105,7 @@ instance.prototype.actions = function(system) {
 				}
 			]
 		},
+
 		'unmuteLayer': {
 			label: 'Unmute Layer (id)',
 			options: [
@@ -234,6 +240,7 @@ instance.prototype.actions = function(system) {
 
 	});
 }
+
 
 instance.prototype.action = function(action) {
 	var self = this;
