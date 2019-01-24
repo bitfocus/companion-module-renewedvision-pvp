@@ -237,15 +237,33 @@ instance.prototype.actions = function(system) {
 			options: [
 				{
 					type: 'textinput',
+					label: 'Layer ID',
+					id: 'idx',
+					default: '0'
+				},
+				{
+					type: 'textinput',
 					label: 'Target Set ID',
 					id: 'ts',
 					default: '1'
 				},
+			]
+		},
+
+		'layerPreset': {
+			label: "Layer Preset",
+			options: [
 				{
 					type: 'textinput',
 					label: 'Layer ID',
 					id: 'idx',
-					default: '1'
+					default: '0'
+				},
+				{
+					type: 'textinput',
+					label: 'Layer Preset Name',
+					id: 'lpn',
+					default: 'Preset 1'
 				}
 			]
 		},
@@ -272,9 +290,9 @@ instance.prototype.action = function(action) {
 			cmd = '/clear/layer/' + action.options.idx;
 			break;
 
-			case 'hideLayer':
-				cmd = '/hide/layer/' + action.options.idx;
-				break;
+		case 'hideLayer':
+			cmd = '/hide/layer/' + action.options.idx;
+			break;
 
 		case 'muteLayer':
 			cmd = '/mute/layer/' + action.options.idx;
@@ -338,6 +356,13 @@ instance.prototype.action = function(action) {
 				value: action.options.ts
 			};
 			break;
+
+		case 'layerPreset':
+			cmd = '/layerPreset/layer/' + action.options.idx;
+			body = {
+				value: action.options.lpn
+			};
+		break;
 
 	}
 
