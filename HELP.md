@@ -1,4 +1,4 @@
-**Renewed Vision PVP 3.0**
+**Renewed Vision PVP 3.1**
 
 Go over to [Renewed Vision](https://renewedvision.com/provideoplayer/) to learn more about the software.
 
