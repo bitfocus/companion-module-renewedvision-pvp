@@ -86,10 +86,10 @@ instance.prototype.actions = function(system) {
 			label: 'Clear Layer (id)',
 			options: [
 				{
-					 type: 'textinput',
-					 label: 'layer id',
-					 id: 'idx',
-					 default: '1'
+					type: 'textinput',
+					label: 'layer id',
+					id: 'idx',
+					default: '1'
 				}
 			]
 		},
@@ -98,10 +98,10 @@ instance.prototype.actions = function(system) {
 			label: 'Mute Layer (id)',
 			options: [
 				{
-					 type: 'textinput',
-					 label: 'layer id',
-					 id: 'idx',
-					 default: '1'
+					type: 'textinput',
+					label: 'layer id',
+					id: 'idx',
+					default: '1'
 				}
 			]
 		},
@@ -110,10 +110,10 @@ instance.prototype.actions = function(system) {
 			label: 'Unmute Layer (id)',
 			options: [
 				{
-					 type: 'textinput',
-					 label: 'layer id',
-					 id: 'idx',
-					 default: '1'
+					type: 'textinput',
+					label: 'layer id',
+					id: 'idx',
+					default: '1'
 				}
 			]
 		},
@@ -122,10 +122,10 @@ instance.prototype.actions = function(system) {
 			label: 'Select Layer (id)',
 			options: [
 				{
-					 type: 'textinput',
-					 label: 'layer id',
-					 id: 'idx',
-					 default: '1'
+					type: 'textinput',
+					label: 'layer id',
+					id: 'idx',
+					default: '1'
 				}
 			]
 		},
@@ -134,10 +134,10 @@ instance.prototype.actions = function(system) {
 			label: 'Hide Layer (id)',
 			options: [
 				{
-					 type: 'textinput',
-					 label: 'layer id',
-					 id: 'idx',
-					 default: '1'
+					type: 'textinput',
+					label: 'layer id',
+					id: 'idx',
+					default: '1'
 				}
 			]
 		},
@@ -146,10 +146,10 @@ instance.prototype.actions = function(system) {
 			label: 'Unhide Layer (id)',
 			options: [
 				{
-					 type: 'textinput',
-					 label: 'layer id',
-					 id: 'idx',
-					 default: '1'
+					type: 'textinput',
+					label: 'layer id',
+					id: 'idx',
+					default: '1'
 				}
 			]
 		},
@@ -158,10 +158,10 @@ instance.prototype.actions = function(system) {
 			label: 'Select Playlist (id)',
 			options: [
 				{
-					 type: 'textinput',
-					 label: 'Playlist id',
-					 id: 'pl',
-					 default: '1'
+					type: 'textinput',
+					label: 'Playlist id',
+					id: 'pl',
+					default: '1'
 				}
 			]
 		},
@@ -170,10 +170,10 @@ instance.prototype.actions = function(system) {
 			label: 'Trigger Cue (id)',
 			options: [
 				{
-					 type: 'textinput',
-					 label: 'Cue id',
-					 id: 'cue',
-					 default: '1'
+					type: 'textinput',
+					label: 'Cue id',
+					id: 'cue',
+					default: '1'
 				}
 			]
 		},
@@ -182,10 +182,10 @@ instance.prototype.actions = function(system) {
 			label: 'Trigger Playlist (id)',
 			options: [
 				{
-					 type: 'textinput',
-					 label: 'Playlist Id',
-					 id: 'pl',
-					 default: '1'
+					type: 'textinput',
+					label: 'Playlist Id',
+					id: 'pl',
+					default: '1'
 				}
 			]
 		},
@@ -194,16 +194,16 @@ instance.prototype.actions = function(system) {
 			label: 'Trigger Cue in Playlist (Playlist ID) (Cue ID)',
 			options: [
 				{
-					 type: 'textinput',
-					 label: 'Playlist id',
-					 id: 'pl',
-					 default: '1'
+					type: 'textinput',
+					label: 'Playlist id',
+					id: 'pl',
+					default: '1'
 				},
 				{
-					 type: 'textinput',
-					 label: 'Cue Id',
-					 id: 'cue',
-					 default: '1'
+					type: 'textinput',
+					label: 'Cue Id',
+					id: 'cue',
+					default: '1'
 				}
 			]
 		},
@@ -212,22 +212,40 @@ instance.prototype.actions = function(system) {
 			label: 'Trigger Cue in Playlist on Layer (Layer ID) (Playlist ID) (Cue ID)',
 			options: [
 				{
-					 type: 'textinput',
-					 label: 'Playlist id',
-					 id: 'pl',
-					 default: '1'
+					type: 'textinput',
+					label: 'Playlist id',
+					id: 'pl',
+					default: '1'
 				},
 				{
-					 type: 'textinput',
-					 label: 'Cue Id',
-					 id: 'cue',
-					 default: '1'
+					type: 'textinput',
+					label: 'Cue Id',
+					id: 'cue',
+					default: '1'
 				},
 				{
-					 type: 'textinput',
-					 label: 'Layer Id',
-					 id: 'idx',
-					 default: '1'
+					type: 'textinput',
+					label: 'Layer Id',
+					id: 'idx',
+					default: '1'
+				}
+			]
+		},
+
+		'selectTargetSet': {
+			label: 'Layer Target Set',
+			options: [
+				{
+					type: 'textinput',
+					label: 'Target Set ID',
+					id: 'ts',
+					default: '1'
+				},
+				{
+					type: 'textinput',
+					label: 'Layer ID',
+					id: 'idx',
+					default: '1'
 				}
 			]
 		},
@@ -246,6 +264,7 @@ instance.prototype.action = function(action) {
 	var self = this;
 	var cmd
 	debug('action: ', action);
+	var body = {};
 
 	switch (action.action) {
 
@@ -265,9 +284,9 @@ instance.prototype.action = function(action) {
 			cmd = '/unmute/layer/' + action.options.idx;
 			break;
 
-			case 'unhideLayer':
-				cmd = '/unhide/layer/' + action.options.idx;
-				break;
+		case 'unhideLayer':
+			cmd = '/unhide/layer/' + action.options.idx;
+			break;
 
 		case 'selectLayer':
 			cmd = '/select/layer/' + action.options.idx;
@@ -313,10 +332,17 @@ instance.prototype.action = function(action) {
 			cmd = '/unhide/workspace';
 			break;
 
+		case 'selectTargetSet':
+			cmd = '/targetSet/layer/' + action.options.idx;
+			body = {
+				value: action.options.ts
+			};
+			break;
+
 	}
 
 	if (cmd !== undefined) {
-		self.system.emit('rest', 'http://' + self.config.host +':'+ self.config.port +'/api/0'+ cmd, {},function (err, result) {
+		self.system.emit('rest', 'http://' + self.config.host +':'+ self.config.port +'/api/0'+ cmd, body, function (err, result) {
 			if (err) {
 				self.log('Error from PVP: ' + result);
 				return;
