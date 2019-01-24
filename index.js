@@ -287,6 +287,53 @@ instance.prototype.actions = function(system) {
 			]
 		},
 
+		'blendMode': {
+			label: "Blend Mode",
+			options: [
+				{
+					type: 'textinput',
+					label: 'Layer ID',
+					id: 'idx',
+					default: '0'
+				},
+				{
+					type: 'dropdown',
+					label: 'Blend Mode',
+					id: 'blendMode',
+					default: 'Normal',
+					choices: [
+						{ id:'Normal', label:'Normal' },
+						{ id:'Dissolve', label:'Dissolve' },
+						{ id:'Darken', label:'Darken' },
+						{ id:'Multiply', label:'Multiply' },
+						{ id:'Color Burn', label:'Color Burn' },
+						{ id:'Linear Burn', label:'Linear Burn' },
+						{ id:'Darker Color', label:'Darker Color' },
+						{ id:'Lighten', label:'Lighten' },
+						{ id:'Screen', label:'Screen' },
+						{ id:'Color Dodge', label:'Color Dodge' },
+						{ id:'Linear Dodge', label:'Linear Dodge' },
+						{ id:'Lighter Color', label:'Lighter Color' },
+						{ id:'Overlay', label:'Overlay' },
+						{ id:'Soft Light', label:'Soft Light' },
+						{ id:'Hard Light', label:'Hard Light' },
+						{ id:'Vivid Light', label:'Vivid Light' },
+						{ id:'Linear Light', label:'Linear Light' },
+						{ id:'Pin Light', label:'Pin Light' },
+						{ id:'Hard Mix', label:'Hard Mix' },
+						{ id:'Difference', label:'Difference' },
+						{ id:'Exclusion', label:'Exclusion' },
+						{ id:'Subtract', label:'Subtract' },
+						{ id:'Divide', label:'Divide' },
+						{ id:'Hue', label:'Hue' },
+						{ id:'Saturation', label:'Saturation' },
+						{ id:'Color', label:'Color' },
+						{ id:'Luminosity', label:'Luminosity' },
+					]
+				}
+			]
+		},
+
 		'clearWs':    { label: 'Clear Workspace'},
 		'muteWs':     { label: 'Mute Workspace'},
 		'hideWs':     { label: 'Hide Workspace'},
@@ -391,6 +438,13 @@ instance.prototype.action = function(action) {
 			cmd = '/opacity/layer/' + action.options.idx;
 			body = {
 				value: opacity
+			};
+			break;
+
+		case 'blendMode':
+			cmd = '/blendMode/layer/' + action.options.idx;
+			body = {
+				value: action.options.blendMode
 			};
 			break;
 
