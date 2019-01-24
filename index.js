@@ -268,6 +268,25 @@ instance.prototype.actions = function(system) {
 			]
 		},
 
+		'opacity': {
+			label: "Opacity",
+			options: [
+				{
+					type: 'textinput',
+					label: 'Layer ID',
+					id: 'idx',
+					default: '0'
+				},
+				{
+					type: 'textinput',
+					label: 'Opacity (%)',
+					id: 'opacity',
+					default: '100',
+					regex: self.REGEX_NUMBER
+				}
+			]
+		},
+
 		'clearWs':    { label: 'Clear Workspace'},
 		'muteWs':     { label: 'Mute Workspace'},
 		'hideWs':     { label: 'Hide Workspace'},
@@ -361,6 +380,17 @@ instance.prototype.action = function(action) {
 			cmd = '/layerPreset/layer/' + action.options.idx;
 			body = {
 				value: action.options.lpn
+			};
+			break;
+
+		case 'opacity':
+			// Opacity needs to be posted as a double.
+			var opacity = Math.min(100, Math.max(0, parseInt(action.options.opacity)));
+			opacity = Math.round(opacity) / 100.0;
+
+			cmd = '/opacity/layer/' + action.options.idx;
+			body = {
+				value: opacity
 			};
 			break;
 
