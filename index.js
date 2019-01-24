@@ -450,15 +450,17 @@ instance.prototype.action = function(action) {
 
 	}
 
-	if (cmd !== undefined) {
-		self.system.emit('rest', 'http://' + self.config.host +':'+ self.config.port +'/api/0'+ cmd, body, function (err, result) {
-			if (err) {
-				self.log('Error from PVP: ' + result);
-				return;
-				}
-			console.log("Result from REST: ", result);
-			});
+	if (cmd === undefined) {
+		return;
 	}
+
+	self.system.emit('rest', 'http://' + self.config.host +':'+ self.config.port +'/api/0'+ cmd, body, function (err, result) {
+		if (err) {
+			self.log('Error from PVP: ' + result);
+			return;
+		}
+		console.log("Result from REST: ", result);
+	});
 
 };
 
