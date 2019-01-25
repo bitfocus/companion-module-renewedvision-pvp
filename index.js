@@ -8,24 +8,15 @@ function instance(system, id, config) {
 	// super-constructor
 	instance_skel.apply(this, arguments);
 
-	self.actions(); // export actions
-
-	// Example: When this script was committed, a fix needed to be made
-	// this will only be run if you had an instance of an older "version" before.
-	// "version" is calculated out from how many upgradescripts your intance config has run.
-	// So just add a addUpgradeScript when you commit a breaking change to the config, that fixes
-	// the config.
-
-	self.addUpgradeScript(function () {
-		// just an example
-		if (self.config.host !== undefined) {
-			self.config.old_host = self.config.host;
-		}
-	});
+	self.actions();
 
 	return self;
-}
+};
 
+
+/**
+ * Config updated by the user.
+ */
 instance.prototype.updateConfig = function(config) {
 	var self = this;
 
@@ -33,6 +24,9 @@ instance.prototype.updateConfig = function(config) {
 };
 
 
+/**
+ * Initializes the module.
+ */
 instance.prototype.init = function() {
 	var self = this;
 
@@ -43,8 +37,10 @@ instance.prototype.init = function() {
 };
 
 
-// Return config fields for web config
-instance.prototype.config_fields = function () {
+/**
+ * Return config fields for web config.
+ */
+instance.prototype.config_fields = function() {
 	var self = this;
 	return [
 		{
@@ -72,18 +68,24 @@ instance.prototype.config_fields = function () {
 };
 
 
-// When module gets deleted
+/**
+ * Cleanup when the module gets deleted.
+ */
 instance.prototype.destroy = function() {
 	var self = this;
 	debug("destroy");
 };
 
 
+/**
+ * Populates the supported actions.
+ */
 instance.prototype.actions = function(system) {
 	var self = this;
+
 	self.setActions({
 		'clearLayer': {
-			label: 'Clear Layer (id)',
+			label: 'Clear Layer',
 			options: [
 				{
 					type: 'textinput',
@@ -282,7 +284,7 @@ instance.prototype.actions = function(system) {
 					label: 'Opacity (%)',
 					id: 'opacity',
 					default: '100',
-					regex: self.REGEX_NUMBER
+					regex: self.REGEX_SIGNED_NUMBER
 				}
 			]
 		},
@@ -341,128 +343,250 @@ instance.prototype.actions = function(system) {
 		'unmuteWs':   { label: 'Unmute Workspace'},
 
 	});
-}
+};
 
 
+/**
+ * Retrieves information from PVP (GET).
+ * 
+ * @param url
+ * @param callback(err, result)
+ */
+instance.prototype.getRest = function(url) {
+	var self = this;
+	return self.doRest('GET', url, {});
+};
+
+
+/**
+ * Commands PVP to do something (POST).
+ * 
+ * @param url
+ * @param body
+ */
+instance.prototype.postRest = function(url, body) {
+	var self = this;
+	return self.doRest('POST', url, body);
+};
+
+
+/**
+ * Performs the REST command against PVP.
+ * 
+ * @param method		Either GET or POST
+ * @param url			The full URL to make the request to
+ * @param body			If POST, an object containing the POST's body
+ */
+instance.prototype.doRest = function(method, url, body) {
+	var self = this;
+
+	return new Promise(function(resolve, reject) {
+
+		function handleResponse(err, result) {
+			if (err === null && typeof result === 'object' && result.response.statusCode === 200) {
+				var objJson = {};
+				if (result.data.length > 0) {
+					try {
+						objJson = JSON.parse(result.data.toString());
+					} catch(error) { }
+				}
+				resolve(objJson);
+			} else {
+				reject(err);
+			}
+		}
+
+		switch(method) {
+			case 'POST':
+				self.system.emit('rest', url, body, function (err, result) {
+					handleResponse(err, result);
+				});
+				break;
+
+			case 'GET':
+				self.system.emit('rest_get', url, function (err, result) {
+					handleResponse(err, result);
+				});
+				break;
+
+			default:
+				throw new Error('Invalid method');
+
+		}
+
+	});
+
+};
+
+
+/**
+ * Runs the specified action.
+ * 
+ * @param action
+ */
 instance.prototype.action = function(action) {
 	var self = this;
-	var cmd
-	debug('action: ', action);
-	var body = {};
+	var opt = action.options;
 
 	switch (action.action) {
 
 		case 'clearLayer':
-			cmd = '/clear/layer/' + action.options.idx;
-			break;
+			self.doCommand('/clear/layer/' + opt.idx);
+			return;
 
 		case 'hideLayer':
-			cmd = '/hide/layer/' + action.options.idx;
-			break;
+			self.doCommand('/hide/layer/' + opt.idx);
+			return;
 
 		case 'muteLayer':
-			cmd = '/mute/layer/' + action.options.idx;
-			break;
+			self.doCommand('/mute/layer/' + opt.idx);
+			return;
 
 		case 'unmuteLayer':
-			cmd = '/unmute/layer/' + action.options.idx;
-			break;
+			self.doCommand('/unmute/layer/' + opt.idx);
+			return;
 
 		case 'unhideLayer':
-			cmd = '/unhide/layer/' + action.options.idx;
-			break;
+			self.doCommand('/unhide/layer/' + opt.idx);
+			return;
 
 		case 'selectLayer':
-			cmd = '/select/layer/' + action.options.idx;
-			break;
+			self.doCommand('/select/layer/' + opt.idx);
+			return;
 
 		case 'selectPL':
-			cmd = '/select/playlist/' + action.options.pl;
-			break;
+			self.doCommand('/select/playlist/' + opt.pl);
+			return;
 
 		case 'triggerCue':
-			cmd = '/trigger/cue/' + action.options.cue;
-			break;
+			self.doCommand('/trigger/cue/' + opt.cue);
+			return;
 
 		case 'triggerPL':
-			cmd = '/trigger/playlist/' + action.options.pl;
-			break;
+			self.doCommand('/trigger/playlist/' + opt.pl);
+			return;
 
 		case 'triggerCuePL':
-			cmd = '/trigger/playlist/' + action.options.pl + '/cue/' + action.options.cue;
-			break;
+			self.doCommand('/trigger/playlist/' + opt.pl + '/cue/' + opt.cue);
+			return;
 
 		case 'triggerCuePLLay':
-			cmd = '/trigger/layer/' + action.options.idx + '/playlist/' + action.options.pl + '/cue/' + action.options.cue;
-			break;
+			self.doCommand('/trigger/layer/' + opt.idx + '/playlist/' + opt.pl + '/cue/' + opt.cue);
+			return;
 
 		case 'clearWs':
-			cmd= '/clear/workspace';
-			break;
+			self.doCommand('/clear/workspace');
+			return;
 
 		case 'muteWs':
-			cmd = '/mute/workspace';
-			break;
+			self.doCommand('/mute/workspace');
+			return;
 
 		case 'unmuteWs':
-			cmd = '/unmute/workspace';
-			break;
+			self.doCommand('/unmute/workspace');
+			return;
 
 		case 'hideWs':
-			cmd = '/hide/workspace';
-			break;
+			self.doCommand('/hide/workspace');
+			return;
 
 		case 'unhideWs':
-			cmd = '/unhide/workspace';
-			break;
+			self.doCommand('/unhide/workspace');
+			return;
 
 		case 'selectTargetSet':
-			cmd = '/targetSet/layer/' + action.options.idx;
-			body = {
-				value: action.options.ts
-			};
-			break;
+			self.doCommand('/targetSet/layer/' + opt.idx, { value: opt.ts });
+			return;
 
 		case 'layerPreset':
-			cmd = '/layerPreset/layer/' + action.options.idx;
-			body = {
-				value: action.options.lpn
-			};
-			break;
+			self.doCommand('/layerPreset/layer/' + opt.idx, { value: opt.lpn });
+			return;
 
 		case 'opacity':
 			// Opacity needs to be posted as a double.
-			var opacity = Math.min(100, Math.max(0, parseInt(action.options.opacity)));
-			opacity = Math.round(opacity) / 100.0;
+			if (opt.opacity[0] === '+' || opt.opacity[0] === '-') {
+				// Relative opacity
 
-			cmd = '/opacity/layer/' + action.options.idx;
-			body = {
-				value: opacity
-			};
-			break;
+				self.getRest(self.makeUrl('/opacity/layer/'+opt.idx)).then(function(objResult) {
+
+					// Convert the current opacity from a float to a percent and add on the relative opacity
+					var opacity = objResult.opacity.value * 100;
+					self.changeOpacity(opt.idx, opacity + parseInt(opt.opacity)); 
+					
+				}).catch(function(err) {
+					self.log('Error from PVP: ' + err);
+				});
+
+			} else {
+				// Absolute
+				self.changeOpacity(opt.idx, opt.opacity);
+			}
+			return;
 
 		case 'blendMode':
-			cmd = '/blendMode/layer/' + action.options.idx;
-			body = {
-				value: action.options.blendMode
-			};
-			break;
-
-	}
-
-	if (cmd === undefined) {
-		return;
-	}
-
-	self.system.emit('rest', 'http://' + self.config.host +':'+ self.config.port +'/api/0'+ cmd, body, function (err, result) {
-		if (err) {
-			self.log('Error from PVP: ' + result);
+			self.doCommand('/blendMode/layer/' + opt.idx, { value: opt.blendMode });
 			return;
-		}
-		console.log("Result from REST: ", result);
+
+	}
+
+};
+
+
+/**
+ * Runs the [POST] command against PVP.
+ * 
+ * @param cmd		The command the run. Must start with '/'
+ * @param body		The body of the POST content
+ */
+instance.prototype.doCommand = function(cmd, body) {
+	var self = this;
+
+	self.postRest(self.makeUrl(cmd), body).then(function(objJson) {
+
+		console.log("Result", objJson);
+
+	}).catch(function(err) {
+
+		console.log("Failure", err);
+
 	});
 
 };
+
+
+/**
+ * Changes the opacity of a layer.
+ * 
+ * @param layer
+ * @param opacity
+ */
+instance.prototype.changeOpacity = function(layer, opacity) {
+	var self = this;
+
+	var opacity = Math.min(100, Math.max(0, parseInt(opacity)));
+	opacity = Math.round(opacity) / 100.0;
+
+	self.doCommand('/opacity/layer/' + layer, { value: opacity });
+
+};
+
+
+/**
+ * Makes the complete URL.
+ * 
+ * @param cmd    Must start with a /
+ */
+instance.prototype.makeUrl = function(cmd) {
+	var self = this;
+
+	if (cmd[0] !== '/') {
+		throw new Error('cmd must start with a /');
+	}
+
+	return 'http://' + self.config.host +':'+ self.config.port +'/api/0'+ cmd;
+
+};
+
 
 instance_skel.extendedBy(instance);
 exports = module.exports = instance;
