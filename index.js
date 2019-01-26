@@ -343,9 +343,9 @@ instance.prototype.actions = function(system) {
 		},
 
 		'clearWs':    { label: 'Clear Workspace'},
-		'muteWs':     { label: 'Mute Workspace'},
 		'hideWs':     { label: 'Hide Workspace'},
 		'unhideWs':   { label: 'Unhide Workspace'},
+		'muteWs':     { label: 'Mute Workspace'},
 		'unmuteWs':   { label: 'Unmute Workspace'},
 
 	});
