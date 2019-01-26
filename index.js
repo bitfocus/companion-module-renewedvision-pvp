@@ -19,7 +19,6 @@ function instance(system, id, config) {
  */
 instance.prototype.updateConfig = function(config) {
 	var self = this;
-
 	self.config = config;
 };
 
@@ -48,7 +47,7 @@ instance.prototype.config_fields = function() {
 			id: 'info',
 			width: 12,
 			label: 'Information',
-			value: 'This module will control Renewed Vision PVP ver 3.0'
+			value: 'This module will control Renewed Vision PVP 3.1 or above'
 		},
 		{
 			type: 'textinput',
@@ -64,7 +63,8 @@ instance.prototype.config_fields = function() {
 			width: 4,
 			regex: self.REGEX_PORT
 		}
-	]
+	];
+
 };
 
 
@@ -128,6 +128,12 @@ instance.prototype.actions = function(system) {
 					label: 'Layer ID',
 					id: 'idx',
 					default: '0'
+				},
+				{
+					type: 'dropdown',
+					label: 'Target Layer?',
+					id: 'target',
+					choices: [ { id:true, label:'Yes' }, { id:false, label:'No' } ]
 				}
 			]
 		},
@@ -271,7 +277,7 @@ instance.prototype.actions = function(system) {
 		},
 
 		'opacity': {
-			label: "Opacity",
+			label: "Layer Opacity",
 			options: [
 				{
 					type: 'textinput',
@@ -290,7 +296,7 @@ instance.prototype.actions = function(system) {
 		},
 
 		'blendMode': {
-			label: "Blend Mode",
+			label: "Layer Blend Mode",
 			options: [
 				{
 					type: 'textinput',
@@ -347,10 +353,11 @@ instance.prototype.actions = function(system) {
 
 
 /**
- * Retrieves information from PVP (GET).
+ * Retrieves information from PVP (GET) and returns a Promise.
  * 
  * @param url
  * @param callback(err, result)
+ * @return		A Promise that's resolved after the GET.
  */
 instance.prototype.getRest = function(url) {
 	var self = this;
@@ -359,10 +366,11 @@ instance.prototype.getRest = function(url) {
 
 
 /**
- * Commands PVP to do something (POST).
+ * Commands PVP to do something (POST) and returns a Promise.
  * 
  * @param url
  * @param body
+ * @return		A Promise that's resolved after the POST.
  */
 instance.prototype.postRest = function(url, body) {
 	var self = this;
@@ -371,7 +379,7 @@ instance.prototype.postRest = function(url, body) {
 
 
 /**
- * Performs the REST command against PVP.
+ * Performs the REST command against PVP, either GET or POST.
  * 
  * @param method		Either GET or POST
  * @param url			The full URL to make the request to
@@ -384,6 +392,8 @@ instance.prototype.doRest = function(method, url, body) {
 
 		function handleResponse(err, result) {
 			if (err === null && typeof result === 'object' && result.response.statusCode === 200) {
+				// A successful response from PVP.
+
 				var objJson = {};
 				if (result.data.length > 0) {
 					try {
@@ -391,7 +401,9 @@ instance.prototype.doRest = function(method, url, body) {
 					} catch(error) { }
 				}
 				resolve(objJson);
+
 			} else {
+				// Failure. Reject the promise.
 				reject(err);
 			}
 		}
@@ -451,7 +463,9 @@ instance.prototype.action = function(action) {
 			return;
 
 		case 'selectLayer':
-			self.doCommand('/select/layer/' + opt.idx);
+			// opt.target may not have been set originally. Assume true if not set
+			var target = opt.target || 'true';
+			self.doCommand('/select/layer/' + opt.idx + '?target=' + target);
 			return;
 
 		case 'selectPL':
@@ -504,12 +518,14 @@ instance.prototype.action = function(action) {
 
 		case 'opacity':
 			// Opacity needs to be posted as a double.
+
 			if (opt.opacity[0] === '+' || opt.opacity[0] === '-') {
-				// Relative opacity
+				// Relative opacity. First retrieve the layer's current opacity.
 
 				self.getRest(self.makeUrl('/opacity/layer/'+opt.idx)).then(function(objResult) {
 
-					// Convert the current opacity from a float to a percent and add on the relative opacity
+					// Convert the current opacity from a float to a percent, and add on the
+					//  relative opacity.
 					var opacity = objResult.opacity.value * 100;
 					self.changeOpacity(opt.idx, opacity + parseInt(opt.opacity)); 
 					
@@ -518,7 +534,7 @@ instance.prototype.action = function(action) {
 				});
 
 			} else {
-				// Absolute
+				// Absolute opacity.
 				self.changeOpacity(opt.idx, opt.opacity);
 			}
 			return;
@@ -542,13 +558,9 @@ instance.prototype.doCommand = function(cmd, body) {
 	var self = this;
 
 	self.postRest(self.makeUrl(cmd), body).then(function(objJson) {
-
 		console.log("Result", objJson);
-
 	}).catch(function(err) {
-
 		console.log("Failure", err);
-
 	});
 
 };
@@ -563,6 +575,7 @@ instance.prototype.doCommand = function(cmd, body) {
 instance.prototype.changeOpacity = function(layer, opacity) {
 	var self = this;
 
+	// Force the percentage bounds and convert to a double.
 	var opacity = Math.min(100, Math.max(0, parseInt(opacity)));
 	opacity = Math.round(opacity) / 100.0;
 
