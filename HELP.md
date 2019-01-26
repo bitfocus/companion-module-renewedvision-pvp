@@ -51,8 +51,8 @@ Number IDs are always interpreted as indexes, even if a layer or playlist has a 
 | Hide Layer       | Hides the specified layer.               |
 | Unhide Layer     | Unhides the layer.                       |
 | Clear Workspace  | Clears all the layers in the workspace.  |
-| Mute Workspace   | Mutes the audio.                         |
-| Unmute Workspace | Unmutes the audio.                       |
+| Mute Workspace   | Mutes the audio in the workspace.        |
+| Unmute Workspace | Unmutes the audio in the workspace.      |
 | Hide Workspace   | Hides the workspace.                     |
 | Unhide Workspace | Unhides the workspace.                   |
 
