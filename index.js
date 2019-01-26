@@ -76,7 +76,9 @@ instance.prototype.destroy = function() {
 
 instance.prototype.actions = function(system) {
 	var self = this;
-	self.system.emit('instance_actions', self.id, {
+
+	var actions = {
+
 		'clearLayer': {
 			label: 'Clear Layer (id)',
 			options: [
@@ -226,13 +228,33 @@ instance.prototype.actions = function(system) {
 			]
 		},
 
+		'selectLayerPreset': {
+			label: 'Select Layer Preset',
+			options: [
+				{
+					type: 'textinput',
+					label: 'Layer Preset ID',
+					id: 'lp',
+					default: '0'
+				},
+				{
+					type: 'textinput',
+					label: 'Layer ID',
+					id: 'idx',
+					default: '0',
+				}
+			]
+		},
+
 		'clearWs':    { label: 'Clear Workspace'},
 		'muteWs':     { label: 'Mute Workspace'},
 		'hideWs':     { label: 'Hide Workspace'},
 		'unhideWs':   { label: 'Unhide Workspace'},
-		'unmuteWs':   { label: 'Unmute Workspace'},
+		'unmuteWs':   { label: 'Unmute Workspace'}
 
-	});
+	};
+
+	self.setActions(actions);
 }
 
 instance.prototype.action = function(action) {
@@ -306,6 +328,12 @@ instance.prototype.action = function(action) {
 			cmd = '/unhide/workspace';
 			break;
 
+		case 'selectLayerPreset':
+			cmd = '/layerPreset/layer/' + action.options.idx;
+			body = {
+				value: action.options.lp
+			};
+			break;
 	}
 
 	if (cmd !== undefined) {

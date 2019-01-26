@@ -19,6 +19,7 @@ We currently support the following actions:
 * **Trigger Playlist:** Triggers the first cue on the given playlist by * playlist ID
 * **Trigger Cue Playlist:** Triggers the given cue by ID in the given playlist by ID
 * **Trigger Cue Playlist Layer:** Triggers the given Cue by ID in the given playlist by ID on the given layer by ID
+* **Select Layer Presets:** ability to select from the available Layer Presets
 * **Clear Workspace:** Clears the workspace
 * **Mute Workspace:** Mutes the Audio on the workspace
 * **Unmute Workspace:** Unmutes the Audio on the Workspace
