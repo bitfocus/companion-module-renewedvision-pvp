@@ -169,7 +169,7 @@ instance.prototype.actions = function(system) {
 					type: 'textinput',
 					label: 'Playlist ID',
 					id: 'pl',
-					default: '1'
+					default: '0'
 				}
 			]
 		},
@@ -181,7 +181,7 @@ instance.prototype.actions = function(system) {
 					type: 'textinput',
 					label: 'Cue ID',
 					id: 'cue',
-					default: '1'
+					default: '0'
 				}
 			]
 		},
@@ -193,7 +193,7 @@ instance.prototype.actions = function(system) {
 					type: 'textinput',
 					label: 'Playlist ID',
 					id: 'pl',
-					default: '1'
+					default: '0'
 				}
 			]
 		},
@@ -205,13 +205,13 @@ instance.prototype.actions = function(system) {
 					type: 'textinput',
 					label: 'Playlist ID',
 					id: 'pl',
-					default: '1'
+					default: '0'
 				},
 				{
 					type: 'textinput',
 					label: 'Cue ID',
 					id: 'cue',
-					default: '1'
+					default: '0'
 				}
 			]
 		},
@@ -223,13 +223,13 @@ instance.prototype.actions = function(system) {
 					type: 'textinput',
 					label: 'Playlist ID',
 					id: 'pl',
-					default: '1'
+					default: '0'
 				},
 				{
 					type: 'textinput',
 					label: 'Cue ID',
 					id: 'cue',
-					default: '1'
+					default: '0'
 				},
 				{
 					type: 'textinput',
@@ -251,9 +251,9 @@ instance.prototype.actions = function(system) {
 				},
 				{
 					type: 'textinput',
-					label: 'Target Set ID',
+					label: 'Target Set',
 					id: 'ts',
-					default: '1'
+					default: ''
 				},
 			]
 		},
@@ -269,7 +269,7 @@ instance.prototype.actions = function(system) {
 				},
 				{
 					type: 'textinput',
-					label: 'Layer Preset Name',
+					label: 'Preset Name',
 					id: 'lpn',
 					default: 'Preset 1'
 				}
