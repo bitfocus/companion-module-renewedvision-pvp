@@ -41,6 +41,7 @@ instance.prototype.init = function() {
  */
 instance.prototype.config_fields = function() {
 	var self = this;
+
 	return [
 		{
 			type: 'text',
@@ -355,9 +356,8 @@ instance.prototype.actions = function(system) {
 /**
  * Retrieves information from PVP (GET) and returns a Promise.
  * 
- * @param url
- * @param callback(err, result)
- * @return		A Promise that's resolved after the GET.
+ * @param url           The URL to GET to.
+ * @return              A Promise that's resolved after the GET.
  */
 instance.prototype.getRest = function(url) {
 	var self = this;
@@ -368,9 +368,9 @@ instance.prototype.getRest = function(url) {
 /**
  * Commands PVP to do something (POST) and returns a Promise.
  * 
- * @param url
- * @param body
- * @return		A Promise that's resolved after the POST.
+ * @param url           The URL to POST to
+ * @param body          The body of the POST; an object.
+ * @return              A Promise that's resolved after the POST.
  */
 instance.prototype.postRest = function(url, body) {
 	var self = this;
@@ -381,9 +381,9 @@ instance.prototype.postRest = function(url, body) {
 /**
  * Performs the REST command against PVP, either GET or POST.
  * 
- * @param method		Either GET or POST
- * @param url			The full URL to make the request to
- * @param body			If POST, an object containing the POST's body
+ * @param method        Either GET or POST
+ * @param url           The full URL to make the request to
+ * @param body          If POST, an object containing the POST's body
  */
 instance.prototype.doRest = function(method, url, body) {
 	var self = this;
@@ -551,16 +551,16 @@ instance.prototype.action = function(action) {
 /**
  * Runs the [POST] command against PVP.
  * 
- * @param cmd		The command the run. Must start with '/'
- * @param body		The body of the POST content
+ * @param cmd           The command the run. Must start with '/'
+ * @param body          The body of the POST content
  */
 instance.prototype.doCommand = function(cmd, body) {
 	var self = this;
 
 	self.postRest(self.makeUrl(cmd), body).then(function(objJson) {
-		console.log("Result", objJson);
+		// Success
 	}).catch(function(err) {
-		console.log("Failure", err);
+		log('HTTP error ' + err);
 	});
 
 };
@@ -569,8 +569,8 @@ instance.prototype.doCommand = function(cmd, body) {
 /**
  * Changes the opacity of a layer.
  * 
- * @param layer
- * @param opacity
+ * @param layer         The layer ID
+ * @param opacity       A whole number percentage from 0 to 100
  */
 instance.prototype.changeOpacity = function(layer, opacity) {
 	var self = this;
@@ -587,7 +587,7 @@ instance.prototype.changeOpacity = function(layer, opacity) {
 /**
  * Makes the complete URL.
  * 
- * @param cmd    Must start with a /
+ * @param cmd           Must start with a /
  */
 instance.prototype.makeUrl = function(cmd) {
 	var self = this;
@@ -596,7 +596,7 @@ instance.prototype.makeUrl = function(cmd) {
 		throw new Error('cmd must start with a /');
 	}
 
-	return 'http://' + self.config.host +':'+ self.config.port +'/api/0'+ cmd;
+	return 'http://' + self.config.host + ':' + self.config.port + '/api/0' + cmd;
 
 };
 
