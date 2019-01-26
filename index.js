@@ -259,7 +259,9 @@ instance.prototype.actions = function(system) {
 
 instance.prototype.action = function(action) {
 	var self = this;
-	var cmd
+	var cmd;
+	var body = {};
+
 	debug('action: ', action);
 
 	switch (action.action) {
@@ -337,6 +339,15 @@ instance.prototype.action = function(action) {
 	}
 
 	if (cmd !== undefined) {
+		if(body !== {}) {
+			self.system.emit('rest', 'http://' + self.config.host +':'+ self.config.port +'/api/0'+ cmd, body,function (err, result) {
+				if (err) {
+					self.log('Error from PVP: ' + result);
+					return;
+					}
+				console.log("Result from REST: ", result);
+				});
+		} else {
 		self.system.emit('rest', 'http://' + self.config.host +':'+ self.config.port +'/api/0'+ cmd, {},function (err, result) {
 			if (err) {
 				self.log('Error from PVP: ' + result);
@@ -344,6 +355,7 @@ instance.prototype.action = function(action) {
 				}
 			console.log("Result from REST: ", result);
 			});
+		}
 	}
 
 };
