@@ -404,19 +404,26 @@ instance.prototype.doRest = function(method, url, body) {
 
 			} else {
 				// Failure. Reject the promise.
-				reject(err);
+				var message = 'Unknown error';
+
+				if (result !== undefined && result.error !== undefined) {
+					// Get the error message from the object if present.
+					message = result.error.code +': ' + result.error.message;
+				}
+
+				reject(message);
 			}
 		}
 
 		switch(method) {
 			case 'POST':
-				self.system.emit('rest', url, body, function (err, result) {
+				self.system.emit('rest', url, body, function(err, result) {
 					handleResponse(err, result);
 				});
 				break;
 
 			case 'GET':
-				self.system.emit('rest_get', url, function (err, result) {
+				self.system.emit('rest_get', url, function(err, result) {
 					handleResponse(err, result);
 				});
 				break;
@@ -529,8 +536,8 @@ instance.prototype.action = function(action) {
 					var opacity = objResult.opacity.value * 100;
 					self.changeOpacity(opt.idx, opacity + parseInt(opt.opacity)); 
 					
-				}).catch(function(err) {
-					self.log('Error from PVP: ' + err);
+				}).catch(function(message) {
+					self.log('error', message);
 				});
 
 			} else {
@@ -559,8 +566,8 @@ instance.prototype.doCommand = function(cmd, body) {
 
 	self.postRest(self.makeUrl(cmd), body).then(function(objJson) {
 		// Success
-	}).catch(function(err) {
-		log('HTTP error ' + err);
+	}).catch(function(message) {
+		self.log('error', message);
 	});
 
 };
