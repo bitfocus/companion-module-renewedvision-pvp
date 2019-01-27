@@ -89,6 +89,22 @@ Number IDs are always interpreted as indexes, even if a layer or playlist has a 
 
 
 
+## Error Codes
+
+The following table is from the PVP API documentation:
+
+| Error Code | Meaning                                                      |
+| ---------- | ------------------------------------------------------------ |
+| 400        | Bad Request -- Your request was invalid.                     |
+| 401        | Unauthorized -- Authorization failed.                        |
+| 403        | Forbidden -- The endpoint requested is hidden for administrators only. |
+| 404        | Not Found -- The specified endpoint could not be found.      |
+| 405        | Method Not Allowed -- You tried to access an endpoint with an invalid method. |
+| 500        | Internal Server Error -- We had a problem with our server. Try again later. |
+| 503        | Service Unavailable -- We're temporarily offline for maintenance. Please try again later. |
+
+
+
 ----
 
 For additional actions, please raise a feature request on [GitHub](https://github.com/bitfocus/companion-module-pvp/).
