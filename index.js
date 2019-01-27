@@ -406,9 +406,13 @@ instance.prototype.doRest = function(method, url, body) {
 				// Failure. Reject the promise.
 				var message = 'Unknown error';
 
-				if (result !== undefined && result.error !== undefined) {
-					// Get the error message from the object if present.
-					message = result.error.code +': ' + result.error.message;
+				if (result !== undefined) {
+					if (result.response !== undefined) {
+						message = result.response.statusCode + ': ' + result.response.statusMessage;
+					} else if (result.error !== undefined) {
+						// Get the error message from the object if present.
+						message = result.error.code +': ' + result.error.message;
+					}
 				}
 
 				reject(message);
