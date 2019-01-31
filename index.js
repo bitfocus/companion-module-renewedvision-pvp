@@ -134,7 +134,8 @@ instance.prototype.actions = function(system) {
 					type: 'dropdown',
 					label: 'Target Layer?',
 					id: 'target',
-					choices: [ { id:true, label:'Yes' }, { id:false, label:'No' } ]
+					default: 'true',
+					choices: [ { id:'true', label:'Yes' }, { id:'false', label:'No' } ]
 				}
 			]
 		},
