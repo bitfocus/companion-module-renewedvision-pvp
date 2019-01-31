@@ -110,14 +110,16 @@ Number IDs are always interpreted as indexes, even if a layer or playlist has a 
 
 
 
-### Layers
+### Layers/Workspace
 
-| Action           | Description                                                  |
-| ---------------- | ------------------------------------------------------------ |
-| Layer Blend Mode | Sets the layer's blend mode. The default blend mode is `Normal`. |
-| Layer Opacity    | Sets the layer's opacity by percentage; a whole number from `0` to `100`.  <br />You can also make relative opacity adjustments by prefixing the value with a `+` or `-`. |
-| Layer Preset     | Applies a preset to the specified layer. Leave the `Preset Name` option empty to unlink the layer's preset. |
-| Layer Target Set | Changes the layer's target set.  <br />A PVP bug prevents target sets from being addressed by index. It can only be addressed by its name. |
+| Action                  | Description                                                  |
+| ----------------------- | ------------------------------------------------------------ |
+| Layer Blend Mode        | Sets the layer's blend mode. The default blend mode is `Normal`. |
+| Layer Opacity           | Sets the layer's opacity by percentage; a whole number from `0` to `100`.  <br />You can also make relative opacity adjustments by prefixing the value with a `+` or `-`. |
+| Layer Preset            | Applies a preset to the specified layer. Leave the `Preset Name` option empty to unlink the layer's preset. |
+| Layer Target Set        | Changes the layer's target set.  <br />A PVP bug prevents target sets from being addressed by index. It can only be addressed by its name. |
+| Layer Effect Preset     | Sets the layer's effect preset by its name.  <br />Leave the `Effect Preset Name` field empty to clear all effects. |
+| Workspace Effect Preset | Sets the workspace's effect preset by its name.<br />Leave the `Effect Preset Name` field empty to clear all effects. |
 
 
 

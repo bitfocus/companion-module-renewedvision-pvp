@@ -324,6 +324,24 @@ instance.prototype.actions = function(system) {
 			]
 		},
 
+		'layerEffectPreset': {
+			label: "Layer Effect Preset",
+			options: [
+				{
+					type: 'textinput',
+					label: 'Layer ID',
+					id: 'idx',
+					default: '0'
+				},
+				{
+					type: 'textinput',
+					label: 'Effect Preset Name',
+					id: 'epn',
+					default: ''
+				}
+			]
+		},
+
 		'opacity': {
 			label: "Layer Opacity",
 			options: [
@@ -395,6 +413,18 @@ instance.prototype.actions = function(system) {
 		'unhideWs':   { label: 'Unhide Workspace'},
 		'muteWs':     { label: 'Mute Workspace'},
 		'unmuteWs':   { label: 'Unmute Workspace'},
+
+		'workspaceEffectPreset': {
+			label: "Workspace Effect Preset",
+			options: [
+				{
+					type: 'textinput',
+					label: 'Effect Preset Name',
+					id: 'epn',
+					default: ''
+				}
+			]
+		}
 
 	});
 };
@@ -579,6 +609,22 @@ instance.prototype.action = function(action) {
 
 		case 'layerPreset':
 			self.doCommand('/layerPreset/layer/' + opt.idx, { value: opt.lpn });
+			return;
+
+		case 'layerEffectPreset':
+			self.doCommand('/effectsPreset/layer/' + opt.idx, { value: opt.epn });
+			if (opt.epn === '') {
+				// This will clear all the effects from the layer
+				self.doCommand('/effects/layer/' + opt.idx, { });
+			}
+			return;
+
+		case 'workspaceEffectPreset':
+			self.doCommand('/effectsPreset/workspace', { value: opt.epn });
+			if (opt.epn === '') {
+				// This will clear all the effects from the workspace
+				self.doCommand('/effects/workspace/' + opt.idx, { });
+			}
 			return;
 
 		case 'opacity':
