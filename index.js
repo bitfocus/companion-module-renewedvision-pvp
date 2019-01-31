@@ -20,6 +20,7 @@ function instance(system, id, config) {
 instance.prototype.updateConfig = function(config) {
 	var self = this;
 	self.config = config;
+	self.setPvpIps();
 };
 
 
@@ -30,9 +31,31 @@ instance.prototype.init = function() {
 	var self = this;
 
 	self.status(self.STATE_OK);
+	self.setPvpIps();
 
 	debug = self.debug;
 	log = self.log;
+};
+
+
+/**
+ * Creates an array of PVP instances to control.
+ */
+instance.prototype.setPvpIps = function() {
+	var self = this;
+
+	// Add the primary IP/port of PVP
+	self.arrTargets = [
+		{ host:self.config.host, port:self.config.port }
+	];
+
+	// If a backup instance was defined, add it too.
+	if (self.config.host_backup && self.config.port_backup) {
+		self.arrTargets.push(
+			{ host:self.config.host_backup, port:self.config.port_backup }
+		);
+	}
+
 };
 
 
@@ -48,21 +71,44 @@ instance.prototype.config_fields = function() {
 			id: 'info',
 			width: 12,
 			label: 'Information',
-			value: 'This module will control Renewed Vision PVP 3.1 or above'
+			value: 'This module will control Renewed Vision PVP 3.1 or above.'
 		},
 		{
 			type: 'textinput',
 			id: 'host',
-			label: 'Target IP',
+			label: 'PVP IP',
 			width: 8,
 			regex: self.REGEX_IP
 		},
 		{
 			type: 'textinput',
 			id: 'port',
-			label: 'Target Port',
+			label: 'PVP Port',
 			width: 4,
 			regex: self.REGEX_PORT
+		},
+		{
+			type: 'text',
+			id: 'info',
+			width: 12,
+			label: 'Backup Instance',
+			value: "If you're running a backup instance of PVP, enter its connection details here. Leave empty to ignore."
+		},
+		{
+			type: 'textinput',
+			id: 'host_backup',
+			label: 'PVP IP (Backup instance)',
+			width: 8,
+			// Regex borrowed from instance_skel's REGEX_IP, but made optional
+			regex: '/^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))?$/'
+		},
+		{
+			type: 'textinput',
+			id: 'port_backup',
+			label: 'PVP Port (Backup instance)',
+			width: 4,
+			// Regex borrowed from instance_skel's REGEX_PORT, but made optional
+			regex: '/^(([1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-8][0-9]{3}|9[0-8][0-9]{2}|99[0-8][0-9]|999[0-9]|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-4]))?$/'
 		}
 	];
 
@@ -357,25 +403,29 @@ instance.prototype.actions = function(system) {
 /**
  * Retrieves information from PVP (GET) and returns a Promise.
  * 
- * @param url           The URL to GET to.
+ * @param cmd           The command to execute
+ * @param host          The IP of the target PVP instance
+ * @param port          The port of the target PVP instance
  * @return              A Promise that's resolved after the GET.
  */
-instance.prototype.getRest = function(url) {
+instance.prototype.getRest = function(cmd, host, port) {
 	var self = this;
-	return self.doRest('GET', url, {});
+	return self.doRest('GET', cmd, host, port, {});
 };
 
 
 /**
  * Commands PVP to do something (POST) and returns a Promise.
  * 
- * @param url           The URL to POST to
+ * @param cmd           The command to execute
+ * @param host          The IP of the target PVP instance
+ * @param port          The port of the target PVP instance
  * @param body          The body of the POST; an object.
  * @return              A Promise that's resolved after the POST.
  */
-instance.prototype.postRest = function(url, body) {
+instance.prototype.postRest = function(cmd, host, port, body) {
 	var self = this;
-	return self.doRest('POST', url, body);
+	return self.doRest('POST', cmd, host, port, body);
 };
 
 
@@ -383,11 +433,14 @@ instance.prototype.postRest = function(url, body) {
  * Performs the REST command against PVP, either GET or POST.
  * 
  * @param method        Either GET or POST
- * @param url           The full URL to make the request to
+ * @param cmd           The command to execute
+ * @param host          The IP of the target PVP instance
+ * @param port          The port of the target PVP instance
  * @param body          If POST, an object containing the POST's body
  */
-instance.prototype.doRest = function(method, url, body) {
+instance.prototype.doRest = function(method, cmd, host, port, body) {
 	var self = this;
+	var url  = self.makeUrl(cmd, host, port);
 
 	return new Promise(function(resolve, reject) {
 
@@ -401,7 +454,7 @@ instance.prototype.doRest = function(method, url, body) {
 						objJson = JSON.parse(result.data.toString());
 					} catch(error) { }
 				}
-				resolve(objJson);
+				resolve([ host, port, objJson ]);
 
 			} else {
 				// Failure. Reject the promise.
@@ -416,7 +469,7 @@ instance.prototype.doRest = function(method, url, body) {
 					}
 				}
 
-				reject(message);
+				reject([ host, port, message ]);
 			}
 		}
 
@@ -534,20 +587,30 @@ instance.prototype.action = function(action) {
 			if (opt.opacity[0] === '+' || opt.opacity[0] === '-') {
 				// Relative opacity. First retrieve the layer's current opacity.
 
-				self.getRest(self.makeUrl('/opacity/layer/'+opt.idx)).then(function(objResult) {
+				// Do this command against the primary PVP and the backup PVP (if configured).
+				for (var i=0; i<self.arrTargets.length; i++) {
+					var target = self.arrTargets[i];
 
-					// Convert the current opacity from a float to a percent, and add on the
-					//  relative opacity.
-					var opacity = objResult.opacity.value * 100;
-					self.changeOpacity(opt.idx, opacity + parseInt(opt.opacity)); 
-					
-				}).catch(function(message) {
-					self.log('error', message);
-				});
+					self.getRest('/opacity/layer/'+opt.idx, target.host, target.port).then(function(arrResult) {
+						var host = arrResult[0];
+						var port = arrResult[1];
+
+						// Convert the current opacity from a float to a percent, and add on the
+						//  relative opacity.
+						var opacity = parseFloat(arrResult[2].opacity.value) * 100;
+						self.postRest('/opacity/layer/'+opt.idx, host, port,
+							{ value: self.formatOpacity(opacity + parseInt(opt.opacity)) }
+						);
+						
+					}).catch(function(arrResult) {
+						self.log('error', host + ':' + port + ' ' + arrResult[2]);
+					});
+
+				}
 
 			} else {
 				// Absolute opacity.
-				self.changeOpacity(opt.idx, opt.opacity);
+				self.doCommand('/opacity/layer/'+opt.idx, { value: self.formatOpacity(opt.opacity) });
 			}
 			return;
 
@@ -569,29 +632,33 @@ instance.prototype.action = function(action) {
 instance.prototype.doCommand = function(cmd, body) {
 	var self = this;
 
-	self.postRest(self.makeUrl(cmd), body).then(function(objJson) {
-		// Success
-	}).catch(function(message) {
-		self.log('error', message);
-	});
+	// Do this command against the primary PVP and the backup PVP (if configured).
+	for (var i=0; i<self.arrTargets.length; i++) {
+		var target = self.arrTargets[i];
+
+		self.postRest(cmd, target.host, target.port, body).then(function(objJson) {
+			// Success
+		}).catch(function(message) {
+			self.log('error', target.host + ':' + target.port + ' ' + message);
+		});
+
+	}
 
 };
 
 
 /**
- * Changes the opacity of a layer.
+ * Changes the opacity from a whole number (0 to 100) to a double (0.0 to 1.0).
  * 
- * @param layer         The layer ID
  * @param opacity       A whole number percentage from 0 to 100
+ * @return              The opacity as a double
  */
-instance.prototype.changeOpacity = function(layer, opacity) {
+instance.prototype.formatOpacity = function(opacity) {
 	var self = this;
 
 	// Force the percentage bounds and convert to a double.
 	var opacity = Math.min(100, Math.max(0, parseInt(opacity)));
-	opacity = Math.round(opacity) / 100.0;
-
-	self.doCommand('/opacity/layer/' + layer, { value: opacity });
+	return Math.round(opacity) / 100.0;
 
 };
 
@@ -600,15 +667,17 @@ instance.prototype.changeOpacity = function(layer, opacity) {
  * Makes the complete URL.
  * 
  * @param cmd           Must start with a /
+ * @param host          The IP of the PVP target
+ * @param port          The port of the PVP target
  */
-instance.prototype.makeUrl = function(cmd) {
+instance.prototype.makeUrl = function(cmd, host, port) {
 	var self = this;
 
 	if (cmd[0] !== '/') {
 		throw new Error('cmd must start with a /');
 	}
 
-	return 'http://' + self.config.host + ':' + self.config.port + '/api/0' + cmd;
+	return 'http://' + host + ':' + port + '/api/0' + cmd;
 
 };
 
