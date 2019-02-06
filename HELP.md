@@ -4,7 +4,7 @@
 
 Go to [Renewed Vision](https://renewedvision.com/provideoplayer/) to learn more about the software.
 
->  ProVideoPlayer (PVP) is a Mac-based software application designed to play back and manipulate video across one or more screens.
+> ProVideoPlayer (PVP) is a Mac-based software application designed to play back and manipulate video across one or more screens.
 
 > For over a decade, productions and installations have used ProVideoPlayer for playback to one or more screens along with other tools as part of the full rig: ProPresenter for text and CG, a video rig for camera shots and live produced content, and an expensive screen control system to pull it all together. For many events, a lot of powerful and expensive equipment is radically under-utilized, so we set out to see if we could make a single product that would provide the tools needed for many productions when the complexity of more expensive solutions is unnecessary. That is the vision realized with PVP3.
 
@@ -22,7 +22,39 @@ Choose a port to listen on. Make sure `Use HTTPS Connection` and `Require Authen
 
 **Configure Companion**
 
-Enter in the IP address and port PVP is running on.
+Enter in the IP address and port PVP is running on:
+
+- **PVP IP**: The IP address of the PVP instance you want to control.
+- **PVP Port**: The port PVP is running on (as shown in PVP's Preferences).
+
+
+
+### Backup Instance
+
+If you only have a single PVP instance, leave the following fields empty.
+
+If you have two PVP installations that are running in a primary/backup mode, you may want actions to go to each PVP install to keep them in sync. Instead of creating two PVP instances in Companion and adding the same action for both instances, just add the backup PVP's connection information and let the module handle the work for you:
+
+- **PVP IP (Backup instance)**: The IP address of the backup PVP instance.
+- **PVP Port (Backup instance)**: The port the backup PVP instance.
+
+All actions sent to the primary PVP instance will then be mirrored to the backup instance.
+
+If you ever need to send an action to just one of the two PVP installations, you'll need to create a second PVP module instance in Companion and add those actions there.
+
+
+
+**Relative Layer Opacities**
+
+If you're using the relative layer opacity action and have a backup instance, please be aware that the opacity is relative to each instance's layer opacity. 
+
+
+
+**Network Backup Triggering** 
+
+PVP 3.2 added a network backup triggering mode, which can automatically keep two (or more) PVP instances in sync. This is a great solution if you're controlling PVP from its interface, but not so much if you control the master externally and it fails.
+
+If you use the backup instance feature in this module, be sure to disable PVP's Network Backup Trigger feature.
 
 
 
@@ -30,12 +62,12 @@ Enter in the IP address and port PVP is running on.
 
 Whenever you see `Layer ID` or `Playlist ID` mentioned in an action, you can reference it in one of two ways:
 
-- By its full name (as displayed in PVP). This is the easiest way.
+- By its full name (as displayed in PVP). This is the easiest way. A name is case-sensitive.
 - By its index. For example, the first layer has an index of `0`, the second has an index of `1`, etc.
 
 Number IDs are always interpreted as indexes, even if a layer or playlist has a numeric name.
 
-**Live Video:** A playlist ID of `-1` will select the `Live Video` playlist.
+**Live Video:** A playlist ID of `-1` refers to the `Live Video` playlist.
 
 
 
@@ -78,14 +110,16 @@ Number IDs are always interpreted as indexes, even if a layer or playlist has a 
 
 
 
-### Layers
+### Layers/Workspace
 
-| Action           | Description                                                  |
-| ---------------- | ------------------------------------------------------------ |
-| Layer Blend Mode | Sets the layer's blend mode. The default blend mode is `Normal`. |
-| Layer Opacity    | Sets the layer's opacity by percentage; a whole number from `0` to `100`.  <br />You can also make relative opacity adjustments by prefixing the value with a `+` or `-`. |
-| Layer Preset     | Applies a preset to the specified layer. Leave the `Preset Name` option empty to unlink the layer's preset. |
-| Layer Target Set | Changes the layer's target set.  <br />A PVP bug prevents target sets from being addressed by index. It can only be addressed by its name. |
+| Action                  | Description                                                  |
+| ----------------------- | ------------------------------------------------------------ |
+| Layer Blend Mode        | Sets the layer's blend mode. The default blend mode is `Normal`. |
+| Layer Opacity           | Sets the layer's opacity by percentage; a whole number from `0` to `100`.  <br />You can also make relative opacity adjustments by prefixing the value with a `+` or `-`. |
+| Layer Preset            | Applies a preset to the specified layer. Leave the `Preset Name` option empty to unlink the layer's preset. |
+| Layer Target Set        | Changes the layer's target set.  <br />A PVP bug prevents target sets from being addressed by index. It can only be addressed by its name. |
+| Layer Effect Preset     | Sets the layer's effect preset by its name.  <br />Leave the `Effect Preset Name` field empty to clear all effects. |
+| Workspace Effect Preset | Sets the workspace's effect preset by its name.<br />Leave the `Effect Preset Name` field empty to clear all effects. |
 
 
 
@@ -105,6 +139,6 @@ The following table is from the PVP API documentation:
 
 
 
-----
+------
 
 For additional actions, please raise a feature request on [GitHub](https://github.com/bitfocus/companion-module-pvp/).
