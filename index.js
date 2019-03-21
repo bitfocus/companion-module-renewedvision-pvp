@@ -35,6 +35,8 @@ instance.prototype.init = function() {
 
 	debug = self.debug;
 	log = self.log;
+	
+	self.init_presets();
 };
 
 
@@ -123,6 +125,292 @@ instance.prototype.destroy = function() {
 	debug("destroy");
 };
 
+
+/**
+* Define button presets
+*/
+instance.prototype.init_presets = function () {
+	var self = this;
+
+	var presets = [
+		/**
+		* Presets for Layers
+		*/
+		{
+			category: 'Layers',
+			label: 'This button will clear the selected Layer.',
+			bank: {
+				style: 'text',
+				text: 'Clear\\nLayer #',
+				size: 'auto',
+				color: self.rgb(255, 255, 255),
+				bgcolor: self.rgb(255, 0, 0),
+				latch: false
+			},
+			actions: [
+				{
+					action: 'clearLayer',
+					options: {
+						idx: 0,
+					}
+				}
+			]
+		},
+		
+		{
+			category: 'Layers',
+			label: 'This button will mute the selected Layer.',
+			bank: {
+				style: 'text',
+				text: 'Mute\\nLayer #',
+				size: 'auto',
+				color: self.rgb(255, 255, 255),
+				bgcolor: self.rgb(0, 153, 204),
+				latch: false
+			},
+			actions: [
+				{
+					action: 'muteLayer',
+					options: {
+						idx: 0,
+					}
+				}
+			]
+		},
+
+		{
+			category: 'Layers',
+			label: 'This button will unmute the selected Layer.',
+			bank: {
+				style: 'text',
+				text: 'Unmute\\nLayer #',
+				size: 'auto',
+				color: self.rgb(255, 255, 255),
+				bgcolor: self.rgb(0, 204, 0),
+				latch: false
+			},
+			actions: [
+				{
+					action: 'unmuteLayer',
+					options: {
+						idx: 0
+					}
+				}
+			]
+		},
+
+		{
+			category: 'Layers',
+			label: 'This button will mute and unmute the selected Layer.',
+			bank: {
+				style: 'text',
+				text: 'Mute/\\nUnmute\\nLayer #',
+				size: 'auto',
+				color: self.rgb(255, 255, 255),
+				bgcolor: self.rgb(204, 0, 204),
+				latch: true
+			},
+			actions: [
+				{
+					action: 'muteLayer',
+					options: {
+						idx: 0
+					}
+				}
+			],
+			release_actions: [
+				{
+					action: 'unmuteLayer',
+					options: {
+						idx: 0,
+					}
+				}
+			]
+		},
+
+		{
+			category: 'Layers',
+			label: 'This button will select and target a layer.',
+			bank: {
+				style: 'text',
+				text: 'Select \\nLayer #',
+				size: 'auto',
+				color: self.rgb(255, 255, 255),
+				bgcolor: self.rgb(0, 0, 0),
+				latch: false
+			},
+			actions: [
+				{
+					action: 'selectLayer',
+					options: {
+						idx: 0,
+						target: 'true',
+					}
+				}
+			]
+		},
+		
+		{
+			category: 'Layers',
+			label: 'This button will hide and unhide the selected Layer.',
+			bank: {
+				style: 'text',
+				text: 'Hide/Show\\nLayer #',
+				size: 'auto',
+				color: self.rgb(255, 255, 255),
+				bgcolor: self.rgb(0, 0, 0),
+				latch: true
+			},
+			actions: [
+				{
+					action: 'hideLayer',
+					options: {
+						idx: 0
+					}
+				}
+			],
+			release_actions: [
+				{
+					action: 'unhideLayer',
+					options: {
+						idx: 0,
+					}
+				}
+			]
+		},
+		
+		{
+			category: 'Layers',
+			label: 'This button will select a Playlist.',
+			bank: {
+				style: 'text',
+				text: 'Select\\nPlaylist',
+				size: 'auto',
+				color: self.rgb(255, 255, 255),
+				bgcolor: self.rgb(0, 0, 0),
+				latch: false
+			},
+			actions: [
+				{
+					action: 'selectPL',
+					options: {
+						pl: 0,
+					}
+				}
+			]
+		},
+		
+		{
+			category: 'Layers',
+			label: 'This button will trigger a Cue.',
+			bank: {
+				style: 'text',
+				text: 'Trigger\\nCue',
+				size: 'auto',
+				color: self.rgb(255, 255, 255),
+				bgcolor: self.rgb(0, 0, 0),
+				latch: false
+			},
+			actions: [
+				{
+					action: 'triggerCue',
+					options: {
+						cue: 0,
+					}
+				}
+			]
+		},
+		
+		
+		
+		/**
+		* Presets for Workspace
+		*/
+		
+		{
+			category: 'Workspace',
+			label: 'This button will clear the Workspace.',
+			bank: {
+				style: 'text',
+				text: 'Clear\\nWork\\nspace',
+				size: 'auto',
+				color: self.rgb(255, 255, 255),
+				bgcolor: self.rgb(228, 0, 255),
+				latch: false
+			},
+			actions: [
+				{
+					action: 'clearWs'
+				}
+			]
+		},
+		
+				
+		{
+			category: 'Workspace',
+			label: 'This button will mute the Workspace.',
+			bank: {
+				style: 'text',
+				text: 'Mute\\nWork\\nspace',
+				size: 'auto',
+				color: self.rgb(255, 255, 255),
+				bgcolor: self.rgb(0, 102, 255),
+				latch: false
+			},
+			actions: [
+				{
+					action: 'muteWs'
+				}
+			]
+		},		
+		
+				
+		{
+			category: 'Workspace',
+			label: 'This button will unmute the Workspace.',
+			bank: {
+				style: 'text',
+				text: 'Unmute\\nWork\\nspace',
+				size: 'auto',
+				color: self.rgb(255, 255, 255),
+				bgcolor: self.rgb(0, 153, 51),
+				latch: false
+			},
+			actions: [
+				{
+					action: 'unmuteWs'
+				}
+			]
+		},
+		
+				
+		{
+			category: 'Workspace',
+			label: 'This button will mute and unmute the Workspace.',
+			bank: {
+				style: 'text',
+				text: 'Mute\\nUnmute\\nWorknspace',
+				size: 'auto',
+				color: self.rgb(255, 255, 255),
+				bgcolor: self.rgb(102, 0, 102),
+				latch: true
+			},
+			actions: [
+				{
+					action: 'muteWs'
+				}
+			],
+			release_actions: [
+				{
+					action: 'unmuteWs',
+				}
+			]
+		},			
+		
+			
+	];
+	self.setPresetDefinitions(presets);
+}
 
 /**
  * Populates the supported actions.
