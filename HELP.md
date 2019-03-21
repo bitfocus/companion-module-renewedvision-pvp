@@ -138,6 +138,27 @@ The following table is from the PVP API documentation:
 | 503        | Service Unavailable -- We're temporarily offline for maintenance. Please try again later. |
 
 
+## Presets
+
+The included Presets can be used to quickly create basic buttons for Layers and Workspace.
+
+| Presets for Layers    | Description                                                          |
+| --------------------- | -------------------------------------------------------------------- |
+| Clear Layer #         | Clear a specific layer.                                              |
+| Mute Layer #          | Mute a specific layer.                                               |
+| Unmute Layer #        | Unmute a specific layer                                              |
+| Mute/Unmute Layer #   | Mute and unmute a specific layer with a Key down and Key up action.  |
+| Select Layer #        | Select a specific layer.                                             |
+| Hide/Show Layer #     | Hide and unhide a specific layer with a Key down an Key up action.   |
+| Select Playlist       | Select a specific playlist.                                          |
+| Trigger Cue           | Trigger a cue in the current playlist.                               |
+
+| Presets for Workspace | Description                                                          |
+| --------------------- | -------------------------------------------------------------------- |
+| Clear Workspace       | Clears the workspace (all layers).                                   |
+| Mute Workspace        | Mute the workspace.                                                  |
+| Unmute Workspace      | Unmute the workspace.                                                |
+| Mute/Unmute Workspace | Mute and unmute the workspace with a Key down and Key up action.     |
 
 ------
 
