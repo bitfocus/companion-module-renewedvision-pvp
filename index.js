@@ -35,7 +35,7 @@ instance.prototype.init = function() {
 
 	debug = self.debug;
 	log = self.log;
-	
+
 	self.init_presets();
 };
 
@@ -156,7 +156,7 @@ instance.prototype.init_presets = function () {
 				}
 			]
 		},
-		
+
 		{
 			category: 'Layers',
 			label: 'This button will mute the selected Layer.',
@@ -249,7 +249,7 @@ instance.prototype.init_presets = function () {
 				}
 			]
 		},
-		
+
 		{
 			category: 'Layers',
 			label: 'This button will hide and unhide the selected Layer.',
@@ -278,7 +278,7 @@ instance.prototype.init_presets = function () {
 				}
 			]
 		},
-		
+
 		{
 			category: 'Layers',
 			label: 'This button will select a Playlist.',
@@ -299,7 +299,7 @@ instance.prototype.init_presets = function () {
 				}
 			]
 		},
-		
+
 		{
 			category: 'Layers',
 			label: 'This button will trigger a Cue.',
@@ -320,13 +320,11 @@ instance.prototype.init_presets = function () {
 				}
 			]
 		},
-		
-		
-		
+
 		/**
 		* Presets for Workspace
 		*/
-		
+
 		{
 			category: 'Workspace',
 			label: 'This button will clear the Workspace.',
@@ -344,8 +342,7 @@ instance.prototype.init_presets = function () {
 				}
 			]
 		},
-		
-				
+
 		{
 			category: 'Workspace',
 			label: 'This button will mute the Workspace.',
@@ -362,9 +359,8 @@ instance.prototype.init_presets = function () {
 					action: 'muteWs'
 				}
 			]
-		},		
-		
-				
+		},
+
 		{
 			category: 'Workspace',
 			label: 'This button will unmute the Workspace.',
@@ -382,8 +378,7 @@ instance.prototype.init_presets = function () {
 				}
 			]
 		},
-		
-				
+
 		{
 			category: 'Workspace',
 			label: 'This button will mute and unmute the Workspace.',
@@ -405,9 +400,8 @@ instance.prototype.init_presets = function () {
 					action: 'unmuteWs',
 				}
 			]
-		},			
-		
-			
+		},
+
 	];
 	self.setPresetDefinitions(presets);
 }
@@ -720,7 +714,7 @@ instance.prototype.actions = function(system) {
 
 /**
  * Retrieves information from PVP (GET) and returns a Promise.
- * 
+ *
  * @param cmd           The command to execute
  * @param host          The IP of the target PVP instance
  * @param port          The port of the target PVP instance
@@ -734,7 +728,7 @@ instance.prototype.getRest = function(cmd, host, port) {
 
 /**
  * Commands PVP to do something (POST) and returns a Promise.
- * 
+ *
  * @param cmd           The command to execute
  * @param host          The IP of the target PVP instance
  * @param port          The port of the target PVP instance
@@ -749,7 +743,7 @@ instance.prototype.postRest = function(cmd, host, port, body) {
 
 /**
  * Performs the REST command against PVP, either GET or POST.
- * 
+ *
  * @param method        Either GET or POST
  * @param cmd           The command to execute
  * @param host          The IP of the target PVP instance
@@ -816,7 +810,7 @@ instance.prototype.doRest = function(method, cmd, host, port, body) {
 
 /**
  * Runs the specified action.
- * 
+ *
  * @param action
  */
 instance.prototype.action = function(action) {
@@ -935,7 +929,7 @@ instance.prototype.action = function(action) {
 						self.postRest('/opacity/layer/'+opt.idx, host, port,
 							{ value: self.formatOpacity(opacity + parseInt(opt.opacity)) }
 						);
-						
+
 					}).catch(function(arrResult) {
 						self.log('error', host + ':' + port + ' ' + arrResult[2]);
 					});
@@ -959,7 +953,7 @@ instance.prototype.action = function(action) {
 
 /**
  * Runs the [POST] command against PVP.
- * 
+ *
  * @param cmd           The command the run. Must start with '/'
  * @param body          The body of the POST content
  */
@@ -983,7 +977,7 @@ instance.prototype.doCommand = function(cmd, body) {
 
 /**
  * Changes the opacity from a whole number (0 to 100) to a double (0.0 to 1.0).
- * 
+ *
  * @param opacity       A whole number percentage from 0 to 100
  * @return              The opacity as a double
  */
@@ -999,7 +993,7 @@ instance.prototype.formatOpacity = function(opacity) {
 
 /**
  * Makes the complete URL.
- * 
+ *
  * @param cmd           Must start with a /
  * @param host          The IP of the PVP target
  * @param port          The port of the PVP target
