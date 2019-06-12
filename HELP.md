@@ -119,8 +119,8 @@ Number IDs are always interpreted as indexes, even if a layer or playlist has a 
 | Layer Preset            | Applies a preset to the specified layer. Leave the `Preset Name` option empty to unlink the layer's preset. |
 | Layer Target Set        | Changes the layer's target set.  <br />A PVP bug prevents target sets from being addressed by index. It can only be addressed by its name. |
 | Layer Effect Preset     | Sets the layer's effect preset by its name.  <br />Leave the `Effect Preset Name` field empty to clear all effects. |
+| Track Matte             | (PVP 3.3+) Sets the layer's blend mode (how it blends with the layer immediately under it). Can't be used on the base layer. The `White Matte` mode doesn't support the `Invert Matte` option. |
 | Workspace Effect Preset | Sets the workspace's effect preset by its name.<br />Leave the `Effect Preset Name` field empty to clear all effects. |
-
 
 
 ## Error Codes

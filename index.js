@@ -643,6 +643,36 @@ instance.prototype.actions = function(system) {
 			]
 		},
 
+		'trackMatte': {
+			label: "Track Matte",
+			options: [
+				{
+					type: 'textinput',
+					label: 'Layer ID',
+					id: 'idx',
+					default: '1'
+				},
+				{
+					type: 'dropdown',
+					label: 'Track Matte',
+					id: 'trackMatte',
+					default: 'Alpha Matte',
+					choices: [
+						{ id:'Alpha Matte', label:'Alpha Matte' },
+						{ id:'Luma Matte', label:'Luma Matte' },
+						{ id:'White Matte', label:'White Matte' },
+					]
+				},
+				{
+					type: 'checkbox',
+					label: 'Invert Matte',
+					id: 'invert',
+					default: true,
+					tooltip: 'Check to invert the track matte'
+				}
+			]
+		},
+
 		'blendMode': {
 			label: "Layer Blend Mode",
 			options: [
@@ -946,6 +976,21 @@ instance.prototype.action = function(action) {
 			self.doCommand('/blendMode/layer/' + opt.idx, { value: opt.blendMode });
 			return;
 
+		case 'trackMatte':
+			// PVP 3.3.1: The API for layer blending (/blend/layer/) is either broken or incorrectly documented.
+			//	This endpoint works but isn't officially documented anywhere.
+			var trackMatte = {
+				type: opt.trackMatte,
+				base: { }
+			};
+
+			if (opt.trackMatte === 'Alpha Matte' || opt.trackMatte === 'Luma Matte') {
+				// Only these track matte modes support the isInverted property. Add to object.
+				trackMatte.base.isInverted = opt.invert;
+			}
+
+			self.doCommand('/layerBlend/layer/' + opt.idx, trackMatte);
+			return;
 	}
 
 };
