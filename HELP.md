@@ -14,7 +14,7 @@ Go to [Renewed Vision](https://renewedvision.com/provideoplayer/) to learn more 
 
 **Prepare PVP**
 
-Open Preferences in PVP, switch to the Network tab, and enable network API support. Note the settings on this page and they'll be needed to configure Companion.
+Open Preferences in PVP, switch to the Network tab, and enable network API support. Note the settings as they'll be needed to configure Companion.
 
 
 **Configure Companion**
