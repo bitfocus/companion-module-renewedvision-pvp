@@ -22,7 +22,7 @@ Open Preferences in PVP, switch to the Network tab, and enable network API suppo
 Enter in the IP address and port PVP is running on:
 
 - **PVP IP**: The IP address of the PVP instance you want to control.
-- **HTTPS Connection**: Only set to `Yes` if PVP's `Use HTTPS Connection` is checked.
+- **HTTPS Connection**: Check if PVP's `Use HTTPS Connection` is checked.
 - **Authentication Token**: The `Authentication Token` as shown in PVP's Network Preferences, **only if** PVP's `Require Authentication` is checked.
 - **Port**: The port PVP is running on.
 
@@ -35,7 +35,7 @@ If you only have a single PVP instance, leave the following fields empty.
 If you have two PVP installations that are running in a primary/backup mode, you may want actions to go to each PVP install to keep them in sync. Instead of creating two PVP instances in Companion and adding the same action for both instances, just add the backup PVP's connection information and let the module handle the work for you:
 
 - **PVP IP (Backup instance)**: The IP address of the backup PVP instance.
-- **HTTPS Connection**: If the backup instance requires an `HTTP Connection`.
+- **HTTPS Connection**: Check if the backup instance requires an `HTTP Connection`.
 - **Authentication Token**: The `Authentication Token` for the backup instance.
 - **Port**: The port the backup instance.
 

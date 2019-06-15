@@ -48,19 +48,19 @@ instance.prototype.setPvpIps = function() {
 
 	// Add the primary IP/port of PVP
 	self.arrTargets = [{
-		host   : self.config.host,
-		scheme : self.config.scheme || 'http',
-		port   : self.config.port,
-		auth   : self.config.auth || ''
+		host  : self.config.host,
+		https : self.config.https || false,
+		port  : self.config.port,
+		auth  : self.config.auth || ''
 	}];
 
 	// If a backup instance was defined, add it too.
 	if (self.config.host_backup && self.config.port_backup) {
 		self.arrTargets.push({
-			host   : self.config.host_backup,
-			scheme : self.config.scheme_backup || 'http',
-			port   : self.config.port_backup,
-			auth   : self.config.auth_backup || ''
+			host  : self.config.host_backup,
+			https : self.config.https_backup || false,
+			port  : self.config.port_backup,
+			auth  : self.config.auth_backup || ''
 		});
 	}
 
@@ -89,15 +89,12 @@ instance.prototype.config_fields = function() {
 			regex: self.REGEX_IP
 		},
 		{
-			type: 'dropdown',
-			id: 'scheme',
+			type: 'checkbox',
+			id: 'https',
 			label: 'HTTPS Connection',
 			width: 2,
-			default: 'http',
-			choices: [
-				{ id: 'http', label: 'No' },
-				{ id: 'https', label: 'Yes' },
-			]
+			tooltip: 'Check if PVP requires an HTTPS connection.',
+			default: false
 		},
 		{
 			type: 'textinput',
@@ -106,11 +103,13 @@ instance.prototype.config_fields = function() {
 			width: 4
 		},
 		{
-			type: 'textinput',
+			type: 'number',
 			id: 'port',
 			label: 'Port',
+			min: 1,
+			max: 65535,
 			width: 2,
-			regex: self.REGEX_PORT
+			required: true
 		},
 		{
 			type: 'text',
@@ -128,15 +127,12 @@ instance.prototype.config_fields = function() {
 			regex: '/^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))?$/'
 		},
 		{
-			type: 'dropdown',
-			id: 'scheme_backup',
+			type: 'checkbox',
+			id: 'https_backup',
 			label: 'HTTPS Connection',
 			width: 2,
-			default: 'http',
-			choices: [
-				{ id: 'http', label: 'No' },
-				{ id: 'https', label: 'Yes' },
-			]
+			tooltip: 'Check if PVP requires an HTTPS connection.',
+			default: false
 		},
 		{
 			type: 'textinput',
@@ -145,12 +141,13 @@ instance.prototype.config_fields = function() {
 			width: 4
 		},
 		{
-			type: 'textinput',
+			type: 'number',
 			id: 'port_backup',
 			label: 'Port',
 			width: 2,
-			// Regex borrowed from instance_skel's REGEX_PORT, but made optional
-			regex: '/^(([1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-8][0-9]{3}|9[0-8][0-9]{2}|99[0-8][0-9]|999[0-9]|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-4]))?$/'
+			min: 1,
+			max: 65535,
+			required: false
 		}
 	];
 
@@ -1103,7 +1100,7 @@ instance.prototype.makeUrl = function(cmd, target) {
 		throw new Error('cmd must start with a /');
 	}
 
-	return target.scheme + '://' + target.host + ':' + target.port + '/api/0' + cmd;
+	return (target.https ? 'https://' : 'http://') + target.host + ':' + target.port + '/api/0' + cmd;
 
 };
 
