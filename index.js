@@ -704,7 +704,7 @@ instance.prototype.actions = function(system) {
 					type: 'checkbox',
 					label: 'Invert Matte',
 					id: 'invert',
-					default: true,
+					default: false,
 					tooltip: 'Check to invert the track matte'
 				}
 			]
