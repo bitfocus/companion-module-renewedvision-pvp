@@ -856,12 +856,11 @@ instance.prototype.doRest = function(method, cmd, target, body) {
 			headers['Authorization'] = 'Bearer ' + target.auth;
 		}
 
-		// Required if the scheme is https since PVP used self-signed certificates that will otherwise be rejected
+		// Required if the scheme is https since PVP used self-signed certificates that will otherwise be rejected.
+		// See https://github.com/aacerox/node-rest-client/issues/162
 		var extra_args = {
 			connection : { rejectUnauthorized : false }
 		};
-
-		// https://github.com/aacerox/node-rest-client/issues/162
 
 		switch(method) {
 			case 'POST':
@@ -1055,6 +1054,7 @@ instance.prototype.action = function(action) {
  */
 instance.prototype.doCommand = function(cmd, body) {
 	var self = this;
+	body = body || {};
 
 	// Do this command against the primary PVP and the backup PVP (if configured).
 	for (var i=0; i<self.arrTargets.length; i++) {
