@@ -1,6 +1,6 @@
 {
 	"name": "pvp",
-	"version": "1.0.4",
+	"version": "1.0.6",
 	"api_version": "1.0.0",
 	"keywords": [
 		"Software"
@@ -8,7 +8,7 @@
 	"manufacturer": "Renewed Vision",
 	"product": "PVP 3",
 	"shortname": "pvp",
-	"description": "Module to control Renewed vision PVP 3.0",
+	"description": "Module to control Renewed vision PVP 3.x",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"

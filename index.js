@@ -47,15 +47,21 @@ instance.prototype.setPvpIps = function() {
 	var self = this;
 
 	// Add the primary IP/port of PVP
-	self.arrTargets = [
-		{ host:self.config.host, port:self.config.port }
-	];
+	self.arrTargets = [{
+		host  : self.config.host,
+		https : self.config.https || false,
+		port  : self.config.port,
+		auth  : self.config.auth || ''
+	}];
 
 	// If a backup instance was defined, add it too.
 	if (self.config.host_backup && self.config.port_backup) {
-		self.arrTargets.push(
-			{ host:self.config.host_backup, port:self.config.port_backup }
-		);
+		self.arrTargets.push({
+			host  : self.config.host_backup,
+			https : self.config.https_backup || false,
+			port  : self.config.port_backup,
+			auth  : self.config.auth_backup || ''
+		});
 	}
 
 };
@@ -79,15 +85,31 @@ instance.prototype.config_fields = function() {
 			type: 'textinput',
 			id: 'host',
 			label: 'PVP IP',
-			width: 8,
+			width: 4,
 			regex: self.REGEX_IP
 		},
 		{
+			type: 'checkbox',
+			id: 'https',
+			label: 'HTTPS Connection',
+			width: 2,
+			tooltip: 'Check if PVP requires an HTTPS connection.',
+			default: false
+		},
+		{
 			type: 'textinput',
+			id: 'auth',
+			label: 'Authentication Token',
+			width: 4
+		},
+		{
+			type: 'number',
 			id: 'port',
-			label: 'PVP Port',
-			width: 4,
-			regex: self.REGEX_PORT
+			label: 'Port',
+			min: 1,
+			max: 65535,
+			width: 2,
+			required: true
 		},
 		{
 			type: 'text',
@@ -100,17 +122,32 @@ instance.prototype.config_fields = function() {
 			type: 'textinput',
 			id: 'host_backup',
 			label: 'PVP IP (Backup instance)',
-			width: 8,
+			width: 4,
 			// Regex borrowed from instance_skel's REGEX_IP, but made optional
 			regex: '/^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))?$/'
 		},
 		{
+			type: 'checkbox',
+			id: 'https_backup',
+			label: 'HTTPS Connection',
+			width: 2,
+			tooltip: 'Check if PVP requires an HTTPS connection.',
+			default: false
+		},
+		{
 			type: 'textinput',
+			id: 'auth_backup',
+			label: 'Authentication Token',
+			width: 4
+		},
+		{
+			type: 'number',
 			id: 'port_backup',
-			label: 'PVP Port (Backup instance)',
-			width: 4,
-			// Regex borrowed from instance_skel's REGEX_PORT, but made optional
-			regex: '/^(([1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-8][0-9]{3}|9[0-8][0-9]{2}|99[0-8][0-9]|999[0-9]|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-4]))?$/'
+			label: 'Port',
+			width: 2,
+			min: 1,
+			max: 65535,
+			required: false
 		}
 	];
 
@@ -643,6 +680,36 @@ instance.prototype.actions = function(system) {
 			]
 		},
 
+		'trackMatte': {
+			label: "Track Matte",
+			options: [
+				{
+					type: 'textinput',
+					label: 'Layer ID',
+					id: 'idx',
+					default: '1'
+				},
+				{
+					type: 'dropdown',
+					label: 'Track Matte',
+					id: 'trackMatte',
+					default: 'Alpha Matte',
+					choices: [
+						{ id:'Alpha Matte', label:'Alpha Matte' },
+						{ id:'Luma Matte', label:'Luma Matte' },
+						{ id:'White Matte', label:'White Matte' },
+					]
+				},
+				{
+					type: 'checkbox',
+					label: 'Invert Matte',
+					id: 'invert',
+					default: false,
+					tooltip: 'Check to invert the track matte'
+				}
+			]
+		},
+
 		'blendMode': {
 			label: "Layer Blend Mode",
 			options: [
@@ -716,13 +783,12 @@ instance.prototype.actions = function(system) {
  * Retrieves information from PVP (GET) and returns a Promise.
  *
  * @param cmd           The command to execute
- * @param host          The IP of the target PVP instance
- * @param port          The port of the target PVP instance
+ * @param target        The target PVP instance
  * @return              A Promise that's resolved after the GET.
  */
-instance.prototype.getRest = function(cmd, host, port) {
+instance.prototype.getRest = function(cmd, target) {
 	var self = this;
-	return self.doRest('GET', cmd, host, port, {});
+	return self.doRest('GET', cmd, target, { });
 };
 
 
@@ -730,14 +796,13 @@ instance.prototype.getRest = function(cmd, host, port) {
  * Commands PVP to do something (POST) and returns a Promise.
  *
  * @param cmd           The command to execute
- * @param host          The IP of the target PVP instance
- * @param port          The port of the target PVP instance
+ * @param target        The target PVP instance
  * @param body          The body of the POST; an object.
  * @return              A Promise that's resolved after the POST.
  */
-instance.prototype.postRest = function(cmd, host, port, body) {
+instance.prototype.postRest = function(cmd, target, body) {
 	var self = this;
-	return self.doRest('POST', cmd, host, port, body);
+	return self.doRest('POST', cmd, target, body);
 };
 
 
@@ -746,13 +811,12 @@ instance.prototype.postRest = function(cmd, host, port, body) {
  *
  * @param method        Either GET or POST
  * @param cmd           The command to execute
- * @param host          The IP of the target PVP instance
- * @param port          The port of the target PVP instance
+ * @param target        The target PVP instance
  * @param body          If POST, an object containing the POST's body
  */
-instance.prototype.doRest = function(method, cmd, host, port, body) {
+instance.prototype.doRest = function(method, cmd, target, body) {
 	var self = this;
-	var url  = self.makeUrl(cmd, host, port);
+	var url  = self.makeUrl(cmd, target);
 
 	return new Promise(function(resolve, reject) {
 
@@ -766,7 +830,7 @@ instance.prototype.doRest = function(method, cmd, host, port, body) {
 						objJson = JSON.parse(result.data.toString());
 					} catch(error) { }
 				}
-				resolve([ host, port, objJson ]);
+				resolve([ target, objJson ]);
 
 			} else {
 				// Failure. Reject the promise.
@@ -781,21 +845,36 @@ instance.prototype.doRest = function(method, cmd, host, port, body) {
 					}
 				}
 
-				reject([ host, port, message ]);
+				reject([ target, message ]);
 			}
 		}
+
+		var headers = { };
+
+		if (target.auth !== '') {
+			// Add the Authorization header to the REST request
+			headers['Authorization'] = 'Bearer ' + target.auth;
+		}
+
+		// Required if the scheme is https since PVP used self-signed certificates that will otherwise be rejected.
+		// See https://github.com/aacerox/node-rest-client/issues/162
+		var extra_args = {
+			connection : { rejectUnauthorized : false }
+		};
 
 		switch(method) {
 			case 'POST':
 				self.system.emit('rest', url, body, function(err, result) {
-					handleResponse(err, result);
-				});
+						handleResponse(err, result);
+					}, headers, extra_args
+				);
 				break;
 
 			case 'GET':
 				self.system.emit('rest_get', url, function(err, result) {
-					handleResponse(err, result);
-				});
+						handleResponse(err, result);
+					}, headers, extra_args
+				);
 				break;
 
 			default:
@@ -919,26 +998,27 @@ instance.prototype.action = function(action) {
 				for (var i=0; i<self.arrTargets.length; i++) {
 					var target = self.arrTargets[i];
 
-					self.getRest('/opacity/layer/'+opt.idx, target.host, target.port).then(function(arrResult) {
-						var host = arrResult[0];
-						var port = arrResult[1];
+					self.getRest('/opacity/layer/'+opt.idx, target).then(function(arrResult) {
+						var target = arrResult[0];
 
 						// Convert the current opacity from a float to a percent, and add on the
 						//  relative opacity.
-						var opacity = parseFloat(arrResult[2].opacity.value) * 100;
-						self.postRest('/opacity/layer/'+opt.idx, host, port,
+						var opacity = parseFloat(arrResult[1].opacity.value) * 100;
+						self.postRest('/opacity/layer/'+opt.idx, target,
 							{ value: self.formatOpacity(opacity + parseInt(opt.opacity)) }
-						);
+						).catch(function(arrResult) {
+							self.log('error', arrResult[0].host + ':' + arrResult[0].port + ' - ' + arrResult[1]);
+						})
 
 					}).catch(function(arrResult) {
-						self.log('error', host + ':' + port + ' ' + arrResult[2]);
+						self.log('error', arrResult[0].host + ':' + arrResult[0].port + ' - ' + arrResult[1]);
 					});
 
 				}
 
 			} else {
 				// Absolute opacity.
-				self.doCommand('/opacity/layer/'+opt.idx, { value: self.formatOpacity(opt.opacity) });
+				self.doCommand('/opacity/layer/' + opt.idx, { value: self.formatOpacity(opt.opacity) });
 			}
 			return;
 
@@ -946,6 +1026,21 @@ instance.prototype.action = function(action) {
 			self.doCommand('/blendMode/layer/' + opt.idx, { value: opt.blendMode });
 			return;
 
+		case 'trackMatte':
+			// PVP 3.3.1: The API for layer blending (/blend/layer/) is either broken or incorrectly documented.
+			//	This endpoint works but isn't officially documented anywhere.
+			var trackMatte = {
+				type: opt.trackMatte,
+				base: { }
+			};
+
+			if (opt.trackMatte === 'Alpha Matte' || opt.trackMatte === 'Luma Matte') {
+				// Only these track matte modes support the isInverted property. Add to object.
+				trackMatte.base.isInverted = opt.invert;
+			}
+
+			self.doCommand('/layerBlend/layer/' + opt.idx, trackMatte);
+			return;
 	}
 
 };
@@ -959,15 +1054,16 @@ instance.prototype.action = function(action) {
  */
 instance.prototype.doCommand = function(cmd, body) {
 	var self = this;
+	body = body || {};
 
 	// Do this command against the primary PVP and the backup PVP (if configured).
 	for (var i=0; i<self.arrTargets.length; i++) {
 		var target = self.arrTargets[i];
 
-		self.postRest(cmd, target.host, target.port, body).then(function(objJson) {
+		self.postRest(cmd, target, body).then(function(objJson) {
 			// Success
 		}).catch(function(message) {
-			self.log('error', target.host + ':' + target.port + ' ' + message);
+			self.log('error', target.host + ':' + target.port + ' - ' + message);
 		});
 
 	}
@@ -995,17 +1091,16 @@ instance.prototype.formatOpacity = function(opacity) {
  * Makes the complete URL.
  *
  * @param cmd           Must start with a /
- * @param host          The IP of the PVP target
- * @param port          The port of the PVP target
+ * @param target        The target PVP instance
  */
-instance.prototype.makeUrl = function(cmd, host, port) {
+instance.prototype.makeUrl = function(cmd, target) {
 	var self = this;
 
 	if (cmd[0] !== '/') {
 		throw new Error('cmd must start with a /');
 	}
 
-	return 'http://' + host + ':' + port + '/api/0' + cmd;
+	return (target.https ? 'https://' : 'http://') + target.host + ':' + target.port + '/api/0' + cmd;
 
 };
 
