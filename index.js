@@ -896,154 +896,220 @@ instance.prototype.action = function(action) {
 	var self = this;
 	var opt = action.options;
 
-	switch (action.action) {
+	try {
 
-		case 'clearLayer':
-			self.doCommand('/clear/layer/' + opt.idx);
-			return;
+		switch (action.action) {
 
-		case 'hideLayer':
-			self.doCommand('/hide/layer/' + opt.idx);
-			return;
+			case 'clearLayer':
+				self.doCommand('/clear/layer/' + self.checkLayerId(opt.idx));
+				return;
 
-		case 'muteLayer':
-			self.doCommand('/mute/layer/' + opt.idx);
-			return;
+			case 'hideLayer':
+				self.doCommand('/hide/layer/' + self.checkLayerId(opt.idx));
+				return;
 
-		case 'unmuteLayer':
-			self.doCommand('/unmute/layer/' + opt.idx);
-			return;
+			case 'muteLayer':
+				self.doCommand('/mute/layer/' + self.checkLayerId(opt.idx));
+				return;
 
-		case 'unhideLayer':
-			self.doCommand('/unhide/layer/' + opt.idx);
-			return;
+			case 'unmuteLayer':
+				self.doCommand('/unmute/layer/' + self.checkLayerId(opt.idx));
+				return;
 
-		case 'selectLayer':
-			// opt.target may not have been set originally. Assume true if not set
-			var target = opt.target || 'true';
-			self.doCommand('/select/layer/' + opt.idx + '?target=' + target);
-			return;
+			case 'unhideLayer':
+				self.doCommand('/unhide/layer/' + self.checkLayerId(opt.idx));
+				return;
 
-		case 'selectPL':
-			self.doCommand('/select/playlist/' + opt.pl);
-			return;
+			case 'selectLayer':
+				// opt.target may not have been set originally. Assume true if not set
+				var target = opt.target || 'true';
+				self.doCommand('/select/layer/' + self.checkLayerId(opt.idx) + '?target=' + target);
+				return;
 
-		case 'triggerCue':
-			self.doCommand('/trigger/cue/' + opt.cue);
-			return;
+			case 'selectPL':
+				self.doCommand('/select/playlist/' + self.checkPlaylistId(opt.pl));
+				return;
 
-		case 'triggerPL':
-			self.doCommand('/trigger/playlist/' + opt.pl);
-			return;
+			case 'triggerCue':
+				self.doCommand('/trigger/cue/' + self.checkCueId(opt.cue));
+				return;
 
-		case 'triggerCuePL':
-			self.doCommand('/trigger/playlist/' + opt.pl + '/cue/' + opt.cue);
-			return;
+			case 'triggerPL':
+				self.doCommand('/trigger/playlist/' + self.checkPlaylistId(opt.pl));
+				return;
 
-		case 'triggerCuePLLay':
-			self.doCommand('/trigger/layer/' + opt.idx + '/playlist/' + opt.pl + '/cue/' + opt.cue);
-			return;
+			case 'triggerCuePL':
+				self.doCommand('/trigger/playlist/' + self.checkPlaylistId(opt.pl) + '/cue/' + self.checkCueId(opt.cue));
+				return;
 
-		case 'clearWs':
-			self.doCommand('/clear/workspace');
-			return;
+			case 'triggerCuePLLay':
+				self.doCommand('/trigger/layer/' + self.checkLayerId(opt.idx) + '/playlist/' + self.checkPlaylistId(opt.pl) + '/cue/' + self.checkCueId(opt.cue));
+				return;
 
-		case 'muteWs':
-			self.doCommand('/mute/workspace');
-			return;
+			case 'clearWs':
+				self.doCommand('/clear/workspace');
+				return;
 
-		case 'unmuteWs':
-			self.doCommand('/unmute/workspace');
-			return;
+			case 'muteWs':
+				self.doCommand('/mute/workspace');
+				return;
 
-		case 'hideWs':
-			self.doCommand('/hide/workspace');
-			return;
+			case 'unmuteWs':
+				self.doCommand('/unmute/workspace');
+				return;
 
-		case 'unhideWs':
-			self.doCommand('/unhide/workspace');
-			return;
+			case 'hideWs':
+				self.doCommand('/hide/workspace');
+				return;
 
-		case 'selectTargetSet':
-			self.doCommand('/targetSet/layer/' + opt.idx, { value: opt.ts });
-			return;
+			case 'unhideWs':
+				self.doCommand('/unhide/workspace');
+				return;
 
-		case 'layerPreset':
-			self.doCommand('/layerPreset/layer/' + opt.idx, { value: opt.lpn });
-			return;
+			case 'selectTargetSet':
+				self.doCommand('/targetSet/layer/' + self.checkLayerId(opt.idx), { value: opt.ts });
+				return;
 
-		case 'layerEffectPreset':
-			self.doCommand('/effectsPreset/layer/' + opt.idx, { value: opt.epn });
-			if (opt.epn === '') {
-				// This will clear all the effects from the layer
-				self.doCommand('/effects/layer/' + opt.idx, { });
-			}
-			return;
+			case 'layerPreset':
+				self.doCommand('/layerPreset/layer/' + self.checkLayerId(opt.idx), { value: opt.lpn });
+				return;
 
-		case 'workspaceEffectPreset':
-			self.doCommand('/effectsPreset/workspace', { value: opt.epn });
-			if (opt.epn === '') {
-				// This will clear all the effects from the workspace
-				self.doCommand('/effects/workspace/' + opt.idx, { });
-			}
-			return;
+			case 'layerEffectPreset':
+				self.doCommand('/effectsPreset/layer/' + self.checkLayerId(opt.idx), { value: opt.epn });
+				if (opt.epn === '') {
+					// This will clear all the effects from the layer
+					self.doCommand('/effects/layer/' + self.checkLayerId(pt.idx), { });
+				}
+				return;
 
-		case 'opacity':
-			// Opacity needs to be posted as a double.
+			case 'workspaceEffectPreset':
+				self.doCommand('/effectsPreset/workspace', { value: opt.epn });
+				if (opt.epn === '') {
+					// This will clear all the effects from the workspace
+					self.doCommand('/effects/workspace/' + opt.idx, { });
+				}
+				return;
 
-			if (opt.opacity[0] === '+' || opt.opacity[0] === '-') {
-				// Relative opacity. First retrieve the layer's current opacity.
+			case 'opacity':
+				// Opacity needs to be posted as a double.
 
-				// Do this command against the primary PVP and the backup PVP (if configured).
-				for (var i=0; i<self.arrTargets.length; i++) {
-					var target = self.arrTargets[i];
+				if (opt.opacity[0] === '+' || opt.opacity[0] === '-') {
+					// Relative opacity. First retrieve the layer's current opacity.
 
-					self.getRest('/opacity/layer/'+opt.idx, target).then(function(arrResult) {
-						var target = arrResult[0];
+					// Do this command against the primary PVP and the backup PVP (if configured).
+					for (var i=0; i<self.arrTargets.length; i++) {
+						var target = self.arrTargets[i];
 
-						// Convert the current opacity from a float to a percent, and add on the
-						//  relative opacity.
-						var opacity = parseFloat(arrResult[1].opacity.value) * 100;
-						self.postRest('/opacity/layer/'+opt.idx, target,
-							{ value: self.formatOpacity(opacity + parseInt(opt.opacity)) }
-						).catch(function(arrResult) {
+						self.getRest('/opacity/layer/' + self.checkLayerId(opt.idx), target).then(function(arrResult) {
+							var target = arrResult[0];
+
+							// Convert the current opacity from a float to a percent, and add on the
+							//  relative opacity.
+							var opacity = parseFloat(arrResult[1].opacity.value) * 100;
+							self.postRest('/opacity/layer/' + self.checkLayerId(opt.idx), target,
+								{ value: self.formatOpacity(opacity + parseInt(opt.opacity)) }
+							).catch(function(arrResult) {
+								self.log('error', arrResult[0].host + ':' + arrResult[0].port + ' - ' + arrResult[1]);
+							})
+
+						}).catch(function(arrResult) {
 							self.log('error', arrResult[0].host + ':' + arrResult[0].port + ' - ' + arrResult[1]);
-						})
+						});
 
-					}).catch(function(arrResult) {
-						self.log('error', arrResult[0].host + ':' + arrResult[0].port + ' - ' + arrResult[1]);
-					});
+					}
 
+				} else {
+					// Absolute opacity.
+					self.doCommand('/opacity/layer/' + self.checkLayerId(opt.idx), { value: self.formatOpacity(opt.opacity) });
+				}
+				return;
+
+			case 'blendMode':
+				self.doCommand('/blendMode/layer/' + self.checkLayerId(opt.idx), { value: opt.blendMode });
+				return;
+
+			case 'trackMatte':
+				// PVP 3.3.1: The API for layer blending (/blend/layer/) is either broken or incorrectly documented.
+				//	This endpoint works but isn't officially documented anywhere.
+				var trackMatte = {
+					type: opt.trackMatte,
+					base: { }
+				};
+
+				if (opt.trackMatte === 'Alpha Matte' || opt.trackMatte === 'Luma Matte') {
+					// Only these track matte modes support the isInverted property. Add to object.
+					trackMatte.base.isInverted = opt.invert;
 				}
 
-			} else {
-				// Absolute opacity.
-				self.doCommand('/opacity/layer/' + opt.idx, { value: self.formatOpacity(opt.opacity) });
-			}
-			return;
+				self.doCommand('/layerBlend/layer/' + self.checkLayerId(opt.idx), trackMatte);
+				return;
+		}
 
-		case 'blendMode':
-			self.doCommand('/blendMode/layer/' + opt.idx, { value: opt.blendMode });
-			return;
-
-		case 'trackMatte':
-			// PVP 3.3.1: The API for layer blending (/blend/layer/) is either broken or incorrectly documented.
-			//	This endpoint works but isn't officially documented anywhere.
-			var trackMatte = {
-				type: opt.trackMatte,
-				base: { }
-			};
-
-			if (opt.trackMatte === 'Alpha Matte' || opt.trackMatte === 'Luma Matte') {
-				// Only these track matte modes support the isInverted property. Add to object.
-				trackMatte.base.isInverted = opt.invert;
-			}
-
-			self.doCommand('/layerBlend/layer/' + opt.idx, trackMatte);
-			return;
+	} catch (err) {
+		self.log('error', err.message);
 	}
 
 };
+
+
+/**
+ * Checks if the ID is a number [interpreted as an index in PVP] and, if so, ensures it's not
+ *   lower than is allowed. PVP will crash if the ID is a negative index (or <= -2 for playlists,
+ *   since -1 means "Video Input").
+ * 
+ * Crashes confirmed in PVP 3.3.2 (50528776)
+ * 
+ * @param id             The ID to check. May be a a string [name], a UUID, or an integer
+ * @param min            The minimum integer to allow
+ * @param errorMessage   The error message to throw if the ID is an out of bounds index
+ */
+instance.prototype.checkId = function(id, min, errorMessage) {
+	
+	// Parse id to an integer. If it (as a string) matches id, then the value is a numeric index.
+	let parsed = parseInt(id, 10);
+	if (parsed.toString() !== id) {
+		// Not a numeric index. Use as-is.
+		return id;
+	}
+
+	if (parsed < min) {
+		throw new Error(errorMessage);
+	}
+
+	return id;
+	
+};
+
+
+/**
+ * Checks if the Layer ID is valid.
+ * 
+ * @param                The ID to check
+ */
+instance.prototype.checkLayerId = function(id) {
+	return this.checkId(id, 0, "Layer ID can't be lower than 0.");
+};
+
+
+/**
+ * Checks if the Playlist ID is valid.
+ * 
+ * @param                The ID to check
+ */
+instance.prototype.checkPlaylistId = function(id) {
+	return this.checkId(id, -1, "Playlist ID can't be lower than -1.");
+};
+
+
+/**
+ * Checks if the Cue ID is valid.
+ * 
+ * @param                The ID to check
+ */
+instance.prototype.checkCueId = function(id) {
+	return this.checkId(id, 0, "Cue ID can't be lower than 0.");
+};
+
 
 
 /**
