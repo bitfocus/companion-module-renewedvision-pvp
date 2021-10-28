@@ -84,14 +84,14 @@ instance.prototype.config_fields = function() {
 		{
 			type: 'textinput',
 			id: 'host',
-			label: 'PVP IP',
+			label: 'PVP Host',
 			width: 4,
-			regex: self.REGEX_IP
+			required: true
 		},
 		{
 			type: 'checkbox',
 			id: 'https',
-			label: 'HTTPS Connection',
+			label: 'Use HTTPS',
 			width: 2,
 			tooltip: 'Check if PVP requires an HTTPS connection.',
 			default: false
@@ -103,13 +103,12 @@ instance.prototype.config_fields = function() {
 			width: 4
 		},
 		{
-			type: 'number',
+			type: 'textinput',
 			id: 'port',
 			label: 'Port',
-			min: 1,
-			max: 65535,
 			width: 2,
-			required: true
+			required: true,
+			regex: this.REGEX_PORT
 		},
 		{
 			type: 'text',
@@ -121,15 +120,14 @@ instance.prototype.config_fields = function() {
 		{
 			type: 'textinput',
 			id: 'host_backup',
-			label: 'PVP IP (Backup instance)',
+			label: 'PVP Host (Backup instance)',
 			width: 4,
-			// Regex borrowed from instance_skel's REGEX_IP, but made optional
-			regex: '/^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))?$/'
+			required: false
 		},
 		{
 			type: 'checkbox',
 			id: 'https_backup',
-			label: 'HTTPS Connection',
+			label: 'Use HTTPS',
 			width: 2,
 			tooltip: 'Check if PVP requires an HTTPS connection.',
 			default: false
@@ -141,13 +139,12 @@ instance.prototype.config_fields = function() {
 			width: 4
 		},
 		{
-			type: 'number',
+			type: 'textinput',
 			id: 'port_backup',
 			label: 'Port',
 			width: 2,
-			min: 1,
-			max: 65535,
-			required: false
+			required: false,
+			regex: this.REGEX_PORT,
 		}
 	];
 
