@@ -120,14 +120,20 @@ Number IDs are always interpreted as indexes, even if a layer or playlist has a 
 | Layer Opacity           | Sets the layer's opacity by percentage; a whole number from `0` to `100`.  <br>You can also make relative opacity adjustments by prefixing the value with a `+` or `-`. |
 | Layer Preset            | Applies a preset to the specified layer. Leave the `Preset Name` option empty to unlink the layer's preset. |
 | Layer Target Set        | Changes the layer's target set.  <br>A PVP bug prevents target sets from being addressed by index. It can only be addressed by its name. |
-| Layer Transition Duration (Seconds) | Sets the transition duration of a layer. |
+| Layer Transition Duration (Seconds) | Sets the transition duration of a layer. See _Transition Duration Note_ below. |
 | Layer Effect Preset     | Sets the layer's effect preset by its name.  <br>Leave the `Effect Preset Name` field empty to clear all effects. |
 | Pause Layer             | Pauses the media playing in the layer. |
 | Play Layer              | Plays/resumes the media playing in the layer. |
 | Skip Media in Layer (Seconds) | Skips the layer's playing media back or forward some number of seconds. Negative _Seconds_ skips back.  <br>Use decimals to skip back fractions of seconds; `-1.5` will skip back one-and-a-half seconds. |
 | Track Matte             | (PVP 3.3+) Sets the layer's blend mode (how it blends with the layer immediately under it). Can't be used on the base layer. The `White Matte` mode doesn't support the `Invert Matte` option. |
 | Workspace Effect Preset | Sets the workspace's effect preset by its name.<br>Leave the `Effect Preset Name` field empty to clear all effects. |
-| Workspace Transition Duration (Seconds) | Sets the transition duration of the workspace. |
+| Workspace Transition Duration (Seconds) | Sets the transition duration of the workspace. See _Transition Duration Note_ below. |
+
+
+#### Transition Duration Note
+Any layer or workspace that uses the `Default` transition in PVP shares that same duration property. For example, if **Layer 1**, **Layer 2** and **Workspace [Master]** use the `Default` transition, then changing the duration of any one of them will change all the others.
+
+Give each layer its own transition, like **Dissolve**, if you want to be able to control them separately.
 
 
 ## Error Codes
