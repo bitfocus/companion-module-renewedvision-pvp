@@ -21,8 +21,8 @@ Open Preferences in PVP, switch to the Network tab, and enable network API suppo
 
 Enter in the IP address and port PVP is running on:
 
-- **PVP IP**: The IP address of the PVP instance you want to control.
-- **HTTPS Connection**: Check if PVP's `Use HTTPS Connection` is checked.
+- **PVP Host**: The IP address or hostname of the PVP instance you want to control.
+- **Use HTTPS** Check if PVP's `Use HTTPS Connection` is checked.
 - **Authentication Token**: The `Authentication Token` as shown in PVP's Network Preferences, **only if** PVP's `Require Authentication` is checked.
 - **Port**: The port PVP is running on.
 
@@ -34,8 +34,8 @@ If you only have a single PVP instance, leave the following fields empty.
 
 If you have two PVP installations that are running in a primary/backup mode, you may want actions to go to each PVP install to keep them in sync. Instead of creating two PVP instances in Companion and adding the same action for both instances, just add the backup PVP's connection information and let the module handle the work for you:
 
-- **PVP IP (Backup instance)**: The IP address of the backup PVP instance.
-- **HTTPS Connection**: Check if the backup instance requires an `HTTP Connection`.
+- **PVP Host (Backup instance)**: The IP address of the backup PVP instance.
+- **Use HTTPS**: Check if the backup instance requires an `HTTP Connection`.
 - **Authentication Token**: The `Authentication Token` for the backup instance.
 - **Port**: The port the backup instance.
 
@@ -95,7 +95,7 @@ Number IDs are always interpreted as indexes, even if a layer or playlist has a 
 
 | Action          | Description                                                  |
 | --------------- | ------------------------------------------------------------ |
-| Select Layer    | Selects the layer in PVP.  <br />Set `Target Layer`to `Yes` to make the layer the target of untargeted media. |
+| Select Layer    | Selects the layer in PVP.  <br>Set `Target Layer`to `Yes` to make the layer the target of untargeted media. |
 | Select Playlist | Selects the playlist.                                        |
 
 
@@ -115,13 +115,25 @@ Number IDs are always interpreted as indexes, even if a layer or playlist has a 
 
 | Action                  | Description                                                  |
 | ----------------------- | ------------------------------------------------------------ |
+| Go to Layer Offset (Seconds) | Skips the layer's playing media to a specific offset. Positive numbers indicate the offset is from the start, and negative numbers from the end.  <br>Examples: `5` moves to 5 seconds from the start. `-5` moves to 5 seconds from the end. `0` moves to the start. `-0` moves to the end. |
 | Layer Blend Mode        | Sets the layer's blend mode. The default blend mode is `Normal`. |
-| Layer Opacity           | Sets the layer's opacity by percentage; a whole number from `0` to `100`.  <br />You can also make relative opacity adjustments by prefixing the value with a `+` or `-`. |
+| Layer Opacity           | Sets the layer's opacity by percentage; a whole number from `0` to `100`.  <br>You can also make relative opacity adjustments by prefixing the value with a `+` or `-`. |
 | Layer Preset            | Applies a preset to the specified layer. Leave the `Preset Name` option empty to unlink the layer's preset. |
-| Layer Target Set        | Changes the layer's target set.  <br />A PVP bug prevents target sets from being addressed by index. It can only be addressed by its name. |
-| Layer Effect Preset     | Sets the layer's effect preset by its name.  <br />Leave the `Effect Preset Name` field empty to clear all effects. |
+| Layer Target Set        | Changes the layer's target set.  <br>A PVP bug prevents target sets from being addressed by index. It can only be addressed by its name. |
+| Layer Transition Duration (Seconds) | Sets the transition duration of a layer. See _Transition Duration Note_ below. |
+| Layer Effect Preset     | Sets the layer's effect preset by its name.  <br>Leave the `Effect Preset Name` field empty to clear all effects. |
+| Pause Layer             | Pauses the media playing in the layer. |
+| Play Layer              | Plays/resumes the media playing in the layer. |
+| Skip Media in Layer (Seconds) | Skips the layer's playing media back or forward some number of seconds. Negative _Seconds_ skips back.  <br>Use decimals to skip back fractions of seconds; `-1.5` will skip back one-and-a-half seconds. |
 | Track Matte             | (PVP 3.3+) Sets the layer's blend mode (how it blends with the layer immediately under it). Can't be used on the base layer. The `White Matte` mode doesn't support the `Invert Matte` option. |
-| Workspace Effect Preset | Sets the workspace's effect preset by its name.<br />Leave the `Effect Preset Name` field empty to clear all effects. |
+| Workspace Effect Preset | Sets the workspace's effect preset by its name.<br>Leave the `Effect Preset Name` field empty to clear all effects. |
+| Workspace Transition Duration (Seconds) | Sets the transition duration of the workspace. See _Transition Duration Note_ below. |
+
+
+#### Transition Duration Note
+Any layer or workspace that uses the `Default` transition in PVP shares that same duration property. For example, if **Layer 1**, **Layer 2** and **Workspace [Master]** use the `Default` transition, then changing the duration of any one of them will change all the others.
+
+Give each layer its own transition, like **Dissolve**, if you want to be able to control them separately.
 
 
 ## Error Codes
@@ -163,4 +175,4 @@ The included Presets can be used to quickly create basic buttons for Layers and 
 
 ------
 
-For additional actions, please raise a feature request on [GitHub](https://github.com/bitfocus/companion-module-pvp/).
+For additional actions, please raise a feature request on [GitHub](https://github.com/bitfocus/companion-module-renewedvision-pvp).

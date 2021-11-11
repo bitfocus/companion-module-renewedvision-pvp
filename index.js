@@ -46,22 +46,36 @@ instance.prototype.init = function() {
 instance.prototype.setPvpIps = function() {
 	var self = this;
 
-	// Add the primary IP/port of PVP
-	self.arrTargets = [{
-		host  : self.config.host,
-		https : self.config.https || false,
-		port  : self.config.port,
-		auth  : self.config.auth || ''
-	}];
+	self.arrTargets = [];
+
+	var isPortValid = function(port) {
+		port = parseInt(port);
+		return !isNaN(port) && port > 1024 && port <= 65535;
+	}
+
+
+	if (self.config.host && isPortValid(self.config.port)) {
+		// Add the primary IP/port of PVP
+		self.arrTargets.push({
+			host  : self.config.host,
+			https : self.config.https || false,
+			port  : self.config.port,
+			auth  : self.config.auth || ''
+		});
+	}
 
 	// If a backup instance was defined, add it too.
-	if (self.config.host_backup && self.config.port_backup) {
+	if (self.config.host_backup && isPortValid(self.config.port_backup)) {
 		self.arrTargets.push({
 			host  : self.config.host_backup,
 			https : self.config.https_backup || false,
 			port  : self.config.port_backup,
 			auth  : self.config.auth_backup || ''
 		});
+	}
+
+	if (self.arrTargets.length === 0) {
+		self.log('error', 'No valid PVP instances defined. Check host/port.');
 	}
 
 };
@@ -84,14 +98,14 @@ instance.prototype.config_fields = function() {
 		{
 			type: 'textinput',
 			id: 'host',
-			label: 'PVP IP',
+			label: 'PVP Host',
 			width: 4,
-			regex: self.REGEX_IP
+			required: true
 		},
 		{
 			type: 'checkbox',
 			id: 'https',
-			label: 'HTTPS Connection',
+			label: 'Use HTTPS',
 			width: 2,
 			tooltip: 'Check if PVP requires an HTTPS connection.',
 			default: false
@@ -103,13 +117,12 @@ instance.prototype.config_fields = function() {
 			width: 4
 		},
 		{
-			type: 'number',
+			type: 'textinput',
 			id: 'port',
 			label: 'Port',
-			min: 1,
-			max: 65535,
 			width: 2,
-			required: true
+			required: true,
+			regex: this.REGEX_PORT
 		},
 		{
 			type: 'text',
@@ -121,15 +134,14 @@ instance.prototype.config_fields = function() {
 		{
 			type: 'textinput',
 			id: 'host_backup',
-			label: 'PVP IP (Backup instance)',
+			label: 'PVP Host (Backup instance)',
 			width: 4,
-			// Regex borrowed from instance_skel's REGEX_IP, but made optional
-			regex: '/^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))?$/'
+			required: false
 		},
 		{
 			type: 'checkbox',
 			id: 'https_backup',
-			label: 'HTTPS Connection',
+			label: 'Use HTTPS',
 			width: 2,
 			tooltip: 'Check if PVP requires an HTTPS connection.',
 			default: false
@@ -141,12 +153,10 @@ instance.prototype.config_fields = function() {
 			width: 4
 		},
 		{
-			type: 'number',
+			type: 'textinput',
 			id: 'port_backup',
 			label: 'Port',
 			width: 2,
-			min: 1,
-			max: 65535,
 			required: false
 		}
 	];
@@ -357,6 +367,49 @@ instance.prototype.init_presets = function () {
 				}
 			]
 		},
+
+		{
+			category: 'Layers',
+			label: 'This button will pause media playing on the selected Layer.',
+			bank: {
+				style: 'text',
+				text: 'Pause\\nLayer #',
+				size: 'auto',
+				color: self.rgb(255, 255, 255),
+				bgcolor: self.rgb(0, 0, 0),
+				latch: false
+			},
+			actions: [
+				{
+					action: 'pauseLayer',
+					options: {
+						idx: 0
+					}
+				}
+			]
+		},
+
+		{
+			category: 'Layers',
+			label: 'This button will play/resume media playing on the selected Layer.',
+			bank: {
+				style: 'text',
+				text: 'Play\\nLayer #',
+				size: 'auto',
+				color: self.rgb(255, 255, 255),
+				bgcolor: self.rgb(0, 0, 0),
+				latch: false
+			},
+			actions: [
+				{
+					action: 'playLayer',
+					options: {
+						idx: 0
+					}
+				}
+			]
+		},
+
 
 		/**
 		* Presets for Workspace
@@ -773,6 +826,100 @@ instance.prototype.actions = function(system) {
 					default: ''
 				}
 			]
+		},
+
+		'pauseLayer': {
+			label: "Pause Layer",
+			options: [
+				{
+					type: 'textinput',
+					label: 'Layer ID',
+					id: 'idx',
+					default: '0'
+				}
+			]
+		},
+
+		'playLayer': {
+			label: "Play Layer",
+			options: [
+				{
+					type: 'textinput',
+					label: 'Layer ID',
+					id: 'idx',
+					default: '0'
+				}
+			]
+		},
+
+		'goToLayerOffset': {
+			label: "Go to Layer Offset (Seconds)",
+			options: [
+				{
+					type: 'textinput',
+					label: 'Layer ID',
+					id: 'idx',
+					default: '0'
+				},
+				{
+					type: 'textinput',
+					label: 'Offset (+/- seconds)',
+					id: 'offset',
+					default: '-10',
+					regex : '/^-?\\d+(.\\d+)?$/'
+				}
+			]
+		},
+
+		'skipLayerSeconds': {
+			label: "Skip Media in Layer (Seconds)",
+			options: [
+				{
+					type: 'textinput',
+					label: 'Layer ID',
+					id: 'idx',
+					default: '0'
+				},
+				{
+					type: 'textinput',
+					label: 'Seconds (+/- seconds)',
+					id: 'sec',
+					default: '15.0',
+					regex : '/^-?\\d+(.\\d+)?$/'
+				}
+			]
+		},
+
+		'layerTransitionDuration': {
+			label: "Layer Transition Duration (Seconds)",
+			options: [
+				{
+					type: 'textinput',
+					label: 'Layer ID',
+					id: 'idx',
+					default: '0'
+				},
+				{
+					type: 'textinput',
+					label: 'Seconds (0-5 seconds)',
+					id: 'sec',
+					default: '1.0',
+					regex : '/^\\d+(.\\d+)?$/'
+				}
+			]
+		},
+
+		'workspaceTransitionDuration': {
+			label: "Workspace Transition Duration (Seconds)",
+			options: [
+				{
+					type: 'textinput',
+					label: 'Seconds (0-5 seconds)',
+					id: 'sec',
+					default: '1.0',
+					regex : '/^\\d+(.\\d+)?$/'
+				}
+			]
 		}
 
 	});
@@ -895,6 +1042,8 @@ instance.prototype.doRest = function(method, cmd, target, body) {
 instance.prototype.action = function(action) {
 	var self = this;
 	var opt = action.options;
+
+	let sec;
 
 	try {
 
@@ -1043,6 +1192,47 @@ instance.prototype.action = function(action) {
 
 				self.doCommand('/layerBlend/layer/' + self.checkLayerId(opt.idx), trackMatte);
 				return;
+
+			case 'pauseLayer':
+				self.doCommand('/pause/layer/' + self.checkLayerId(opt.idx), { });
+				return;
+
+			case 'playLayer':
+				self.doCommand('/play/layer/' + self.checkLayerId(opt.idx), { });
+				return;
+
+			case 'skipLayerSeconds':
+				sec = parseFloat(opt.sec);
+				const isForwards = sec >= 0 ? 'true' : 'false';
+				if (sec !== 0 && !isNaN(sec)) {
+					self.doCommand('/skip/layer/' + self.checkLayerId(opt.idx) + '?forwards='+isForwards + '&offset='+Math.abs(sec), { });
+				}
+				return;
+
+			case 'goToLayerOffset':
+				const offset = parseFloat(opt.offset);
+				// offset >= 0 track the video ahead from the start ("2" tracks to 2 seconds from the start of the video).
+				// offset <  0 track the video back from the end ("-2" tracks to seconds from the end of the video).
+				// "-0[.0]" is a special case (which is why it's matched as a string) and it tracks the video to the very end.
+ 				const goToDest = opt.offset[0] !== '-' ? 'goToStart' : 'goToEnd';
+				if (!isNaN(offset)) {
+					self.doCommand('/'+goToDest+'/layer/' + self.checkLayerId(opt.idx) + '?offset='+Math.abs(offset), { });
+				}
+				return;
+
+			case 'layerTransitionDuration':
+			case 'workspaceTransitionDuration':
+				sec = parseFloat(opt.sec);
+				// API specifies the value must be between 0.0 and 5.0.
+				sec = Math.min(Math.max(0.0, sec), 5.0);
+
+				if (action.action === 'layerTransitionDuration') {
+					self.doCommand('/transitionDuration/layer/' + self.checkLayerId(opt.idx), { "value" : sec });
+				} else {
+					self.doCommand('/transitionDuration/workspace', { "value" : sec });
+				}
+				return;
+
 		}
 
 	} catch (err) {
@@ -1056,15 +1246,15 @@ instance.prototype.action = function(action) {
  * Checks if the ID is a number [interpreted as an index in PVP] and, if so, ensures it's not
  *   lower than is allowed. PVP will crash if the ID is a negative index (or <= -2 for playlists,
  *   since -1 means "Video Input").
- * 
+ *
  * Crashes confirmed in PVP 3.3.2 (50528776)
- * 
+ *
  * @param id             The ID to check. May be a a string [name], a UUID, or an integer
  * @param min            The minimum integer to allow
  * @param errorMessage   The error message to throw if the ID is an out of bounds index
  */
 instance.prototype.checkId = function(id, min, errorMessage) {
-	
+
 	// Parse id to an integer. If it (as a string) matches id, then the value is a numeric index.
 	let parsed = parseInt(id, 10);
 	if (parsed.toString() !== id) {
@@ -1077,13 +1267,13 @@ instance.prototype.checkId = function(id, min, errorMessage) {
 	}
 
 	return id;
-	
+
 };
 
 
 /**
  * Checks if the Layer ID is valid.
- * 
+ *
  * @param                The ID to check
  */
 instance.prototype.checkLayerId = function(id) {
@@ -1093,7 +1283,7 @@ instance.prototype.checkLayerId = function(id) {
 
 /**
  * Checks if the Playlist ID is valid.
- * 
+ *
  * @param                The ID to check
  */
 instance.prototype.checkPlaylistId = function(id) {
@@ -1103,7 +1293,7 @@ instance.prototype.checkPlaylistId = function(id) {
 
 /**
  * Checks if the Cue ID is valid.
- * 
+ *
  * @param                The ID to check
  */
 instance.prototype.checkCueId = function(id) {
