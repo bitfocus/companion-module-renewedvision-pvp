@@ -18,12 +18,12 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/bitfocus/companion-module-pvp.git"
+		"url": "git+https://github.com/bitfocus/companion-module-renewedvision-pvp.git"
 	},
 	"author": "Per Røine <per.roine@gmail.com>",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/bitfocus/companion-module-pvp/issues"
+		"url": "https://github.com/bitfocus/companion-module-renewedvision-pvp/issues"
 	},
 	"homepage": "https://github.com/bitfocus/companion-module-pvp#readme"
 }
