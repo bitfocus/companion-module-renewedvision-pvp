@@ -507,7 +507,7 @@ instance.prototype.actions = function(system) {
 			label: 'Clear Layer',
 			options: [
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Layer ID',
 					id: 'idx',
 					default: '0'
@@ -519,7 +519,7 @@ instance.prototype.actions = function(system) {
 			label: 'Mute Layer',
 			options: [
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Layer ID',
 					id: 'idx',
 					default: '0'
@@ -531,7 +531,7 @@ instance.prototype.actions = function(system) {
 			label: 'Unmute Layer',
 			options: [
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Layer ID',
 					id: 'idx',
 					default: '0'
@@ -543,7 +543,7 @@ instance.prototype.actions = function(system) {
 			label: 'Select Layer',
 			options: [
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Layer ID',
 					id: 'idx',
 					default: '0'
@@ -562,7 +562,7 @@ instance.prototype.actions = function(system) {
 			label: 'Hide Layer',
 			options: [
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Layer ID',
 					id: 'idx',
 					default: '0'
@@ -574,7 +574,7 @@ instance.prototype.actions = function(system) {
 			label: 'Unhide Layer',
 			options: [
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Layer ID',
 					id: 'idx',
 					default: '0'
@@ -586,7 +586,7 @@ instance.prototype.actions = function(system) {
 			label: 'Select Playlist',
 			options: [
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Playlist ID',
 					id: 'pl',
 					default: '0'
@@ -598,7 +598,7 @@ instance.prototype.actions = function(system) {
 			label: 'Trigger Cue',
 			options: [
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Cue ID',
 					id: 'cue',
 					default: '0'
@@ -610,7 +610,7 @@ instance.prototype.actions = function(system) {
 			label: 'Trigger Playlist',
 			options: [
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Playlist ID',
 					id: 'pl',
 					default: '0'
@@ -622,13 +622,13 @@ instance.prototype.actions = function(system) {
 			label: 'Trigger Cue in Playlist',
 			options: [
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Playlist ID',
 					id: 'pl',
 					default: '0'
 				},
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Cue ID',
 					id: 'cue',
 					default: '0'
@@ -640,19 +640,19 @@ instance.prototype.actions = function(system) {
 			label: 'Trigger Cue in Playlist on Layer',
 			options: [
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Playlist ID',
 					id: 'pl',
 					default: '0'
 				},
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Cue ID',
 					id: 'cue',
 					default: '0'
 				},
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Layer ID',
 					id: 'idx',
 					default: '0'
@@ -664,13 +664,13 @@ instance.prototype.actions = function(system) {
 			label: 'Layer Target Set',
 			options: [
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Layer ID',
 					id: 'idx',
 					default: '0'
 				},
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Target Set',
 					id: 'ts',
 					default: ''
@@ -682,13 +682,13 @@ instance.prototype.actions = function(system) {
 			label: "Layer Preset",
 			options: [
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Layer ID',
 					id: 'idx',
 					default: '0'
 				},
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Preset Name',
 					id: 'lpn',
 					default: 'Preset 1'
@@ -700,13 +700,13 @@ instance.prototype.actions = function(system) {
 			label: "Layer Effect Preset",
 			options: [
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Layer ID',
 					id: 'idx',
 					default: '0'
 				},
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Effect Preset Name',
 					id: 'epn',
 					default: ''
@@ -718,13 +718,13 @@ instance.prototype.actions = function(system) {
 			label: "Layer Opacity",
 			options: [
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Layer ID',
 					id: 'idx',
 					default: '0'
 				},
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Opacity (%)',
 					id: 'opacity',
 					default: '100',
@@ -737,7 +737,7 @@ instance.prototype.actions = function(system) {
 			label: "Track Matte",
 			options: [
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Layer ID',
 					id: 'idx',
 					default: '1'
@@ -767,7 +767,7 @@ instance.prototype.actions = function(system) {
 			label: "Layer Blend Mode",
 			options: [
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Layer ID',
 					id: 'idx',
 					default: '0'
@@ -820,7 +820,7 @@ instance.prototype.actions = function(system) {
 			label: "Workspace Effect Preset",
 			options: [
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Effect Preset Name',
 					id: 'epn',
 					default: ''
@@ -832,7 +832,7 @@ instance.prototype.actions = function(system) {
 			label: "Pause Layer",
 			options: [
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Layer ID',
 					id: 'idx',
 					default: '0'
@@ -844,7 +844,7 @@ instance.prototype.actions = function(system) {
 			label: "Play Layer",
 			options: [
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Layer ID',
 					id: 'idx',
 					default: '0'
@@ -856,13 +856,13 @@ instance.prototype.actions = function(system) {
 			label: "Go to Layer Offset (Seconds)",
 			options: [
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Layer ID',
 					id: 'idx',
 					default: '0'
 				},
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Offset (+/- seconds)',
 					id: 'offset',
 					default: '-10',
@@ -875,13 +875,13 @@ instance.prototype.actions = function(system) {
 			label: "Skip Media in Layer (Seconds)",
 			options: [
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Layer ID',
 					id: 'idx',
 					default: '0'
 				},
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Seconds (+/- seconds)',
 					id: 'sec',
 					default: '15.0',
@@ -894,13 +894,13 @@ instance.prototype.actions = function(system) {
 			label: "Layer Transition Duration (Seconds)",
 			options: [
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Layer ID',
 					id: 'idx',
 					default: '0'
 				},
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Seconds (0-5 seconds)',
 					id: 'sec',
 					default: '1.0',
@@ -913,7 +913,7 @@ instance.prototype.actions = function(system) {
 			label: "Workspace Transition Duration (Seconds)",
 			options: [
 				{
-					type: 'textinput',
+					type: 'textwithvariables',
 					label: 'Seconds (0-5 seconds)',
 					id: 'sec',
 					default: '1.0',
@@ -1041,7 +1041,23 @@ instance.prototype.doRest = function(method, cmd, target, body) {
  */
 instance.prototype.action = function(action) {
 	var self = this;
-	var opt = action.options;
+
+	// Clone 'action.options', otherwise reassigning the parsed variables directly will push
+	//  them back into the config, because that's done by reference.
+	var opt = JSON.parse(JSON.stringify(action.options));
+
+	// Loop through each option for this action, and if any appear to be variables, parse them
+	//  and reassign the result back into 'opt'.
+	for (const key in opt) {
+		let v = opt[key];
+		if (typeof v === 'string' && v.includes('$(')) {
+			self.system.emit('variable_parse', v.trim(), parsed => {
+				opt[key] = parsed;
+			});
+		}
+	}
+
+
 
 	let sec;
 
