@@ -1,0 +1,36 @@
+{
+	"id": "renewedvision-pvp",
+	"name": "renewedvision-pvp",
+	"shortname": "pvp",
+	"description": "Module to control Renewed vision PVP 3.x",
+	"version": "0.0.0",
+	"license": "MIT",
+	"repository": "git+https://github.com/bitfocus/companion-module-renewedvision-pvp.git",
+	"bugs": "https://github.com/bitfocus/companion-module-renewedvision-pvp/issues",
+	"maintainers": [
+		{
+			"name": "Per Røine",
+			"email": "per.roine@gmail.com"
+		},
+		{
+			"name": "Joseph Adams",
+			"email": "josephdadams@gmail.com"
+		}
+	],
+	"legacyIds": [
+		"pvp"
+	],
+	"runtime": {
+		"type": "node18",
+		"api": "nodejs-ipc",
+		"apiVersion": "0.0.0",
+		"entrypoint": "../index.js"
+	},
+	"manufacturer": "Renewed Vision",
+	"products": [
+		"PVP 3"
+	],
+	"keywords": [
+		"Software"
+	]
+}
