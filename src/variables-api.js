@@ -4,6 +4,7 @@ exports.getPlaylists = getPlaylists;
 exports.getLayers = getLayers;
 exports.getTransportState = getTransportState;
 exports.getPvpState = getPvpState;
+exports.getPvpLiveState = getPvpLiveState;
 function buildBaseUrl(config) {
     const parsedHost = parseHost(config.host);
     const scheme = parsedHost.scheme ?? (config.useHttps ? 'https' : 'http');
@@ -133,6 +134,43 @@ async function getPvpState(config, secrets) {
         transitions,
         availableEffects,
         lastPollTime: new Date().toISOString(),
+    };
+}
+async function getPvpLiveState(config, secrets, previousState) {
+    const [playlists, baseLayers, workspaceTransport] = await Promise.all([
+        getPlaylists(config, secrets),
+        getLayers(config, secrets),
+        getTransportState(config, secrets),
+    ]);
+    const enrichedLayers = baseLayers.map((layer) => mergeLayerWithPrevious(layer, previousState));
+    return {
+        ...previousState,
+        playlists,
+        layers: enrichedLayers,
+        workspaceTransport: workspaceTransport.map((transport) => ({
+            ...transport,
+            layer: transport.layer
+                ? enrichTransportLayer(transport.layer, enrichedLayers, new Map(previousState.targetSets.map((targetSet) => [targetSet.uuid, targetSet.name])), new Map(previousState.effectPresets.map((preset) => [preset.uuid, preset.name])))
+                : undefined,
+        })),
+        lastPollTime: new Date().toISOString(),
+        lastPollError: undefined,
+    };
+}
+function mergeLayerWithPrevious(layer, previousState) {
+    const previousLayer = previousState.layers.find((candidate) => candidate.uuid && candidate.uuid === layer.uuid);
+    if (!previousLayer)
+        return layer;
+    return {
+        ...layer,
+        targetSetName: layer.targetSetName ?? previousLayer.targetSetName,
+        effectPresetName: layer.effectPresetName ?? previousLayer.effectPresetName,
+        layerPresetName: layer.layerPresetName ?? previousLayer.layerPresetName,
+        layerPresetId: layer.layerPresetId ?? previousLayer.layerPresetId,
+        blendMode: layer.blendMode ?? previousLayer.blendMode,
+        blend: layer.blend ?? previousLayer.blend,
+        transition: layer.transition ?? previousLayer.transition,
+        transitionDuration: layer.transitionDuration ?? previousLayer.transitionDuration,
     };
 }
 async function getTargetSets(config, secrets) {

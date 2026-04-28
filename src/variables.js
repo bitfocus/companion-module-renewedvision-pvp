@@ -1,4 +1,4 @@
-const { getPvpState } = require('./variables-api')
+const { getPvpLiveState, getPvpState } = require('./variables-api')
 const {
 	buildVariableDefinitions,
 	buildVariableValues,
@@ -45,6 +45,8 @@ module.exports = {
 
 		self.pvpVariablesState = self.pvpVariablesState || emptyPvpState()
 		self.pvpVariablesSignature = ''
+		self.pvpVariablesPollInFlight = false
+		self.pvpVariablesLastFullPollAt = 0
 
 		self.setVariableDefinitions(buildVariableDefinitions(self.pvpVariablesState))
 		self.setVariableValues(buildVariableValues(self.pvpVariablesState))
@@ -82,6 +84,9 @@ module.exports = {
 	checkVariables: async function () {
 		let self = this
 
+		if (self.pvpVariablesPollInFlight) return
+		self.pvpVariablesPollInFlight = true
+
 		try {
 			const target = getPrimaryVariableTarget(self)
 			if (!target) {
@@ -94,7 +99,15 @@ module.exports = {
 				return
 			}
 
-			const state = await getPvpState(target.config, target.secrets)
+			const fullPollIntervalMs = 15000
+			const shouldFullPoll =
+				!self.pvpVariablesLastFullPollAt ||
+				Date.now() - self.pvpVariablesLastFullPollAt >= fullPollIntervalMs
+			const state = shouldFullPoll
+				? await getPvpState(target.config, target.secrets)
+				: await getPvpLiveState(target.config, target.secrets, self.pvpVariablesState)
+			if (shouldFullPoll) self.pvpVariablesLastFullPollAt = Date.now()
+
 			self.pvpVariablesState = state
 
 			const nextSignature = structureSignature(state)
@@ -118,6 +131,9 @@ module.exports = {
 			if (self.config.verbose) {
 				self.log('error', 'Error setting PVP variables: ' + self.pvpVariablesState.lastPollError)
 			}
+		}
+		finally {
+			self.pvpVariablesPollInFlight = false
 		}
 	}
 }
