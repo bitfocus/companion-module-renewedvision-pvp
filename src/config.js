@@ -40,6 +40,16 @@ module.exports = {
 				regex: this.REGEX_PORT
 			},
 			{
+				type: 'number',
+				id: 'variable_poll_interval_ms',
+				label: 'Variable Poll Interval (ms)',
+				width: 4,
+				min: 250,
+				max: 60000,
+				default: 750,
+				tooltip: 'How often to refresh PVP variables and feedbacks from the primary PVP instance.'
+			},
+			{
 				type: 'static-text',
 				id: 'info',
 				width: 12,

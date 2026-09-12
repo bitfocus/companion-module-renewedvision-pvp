@@ -1,0 +1,94 @@
+PVP COMPANION MODULE — README-ANCHORED VERIFICATION
+Repo: github.com/ArcFlood/companion-module-renewedvision-pvp @ main
+Date: 2026-06-19
+Method: engineering:debug, anchored on the README's stated feature claims
+(the repo has no issues, so the README plays the role issue #1 played for
+arcOS). Each claim is verified against source.
+
+CLAIM SET (from README)
+"This fork adds expanded live variables and grouped feedbacks for playlists,
+cues, layers, transport state, effects, transitions, target sets, blend modes,
+presets, and workspace status while keeping the original PVP control actions
+intact."
+Plus three example variables:
+  $(pvp:playlist_0_cue_0_name)
+  $(pvp:transport_0_time_remaining_clock)
+  $(pvp:layer_0_opacity)
+
+
+================================================================
+CLAIM VERIFICATION
+================================================================
+
+C-A — "expanded live variables ... for [10 categories]".  STATUS: TRUE
+  Evidence: src/variables-core.js builds definitions+values for every claimed
+  category — playlists and per-cue vars, per-layer vars, per-transport vars,
+  workspace effects/transition/effectPreset, plus catalog vars for targetSets,
+  blendModes, layerPresets, effectPresets, transitions, availableEffects.
+  buildVariableDefinitions + buildVariableValues cover all ten.
+
+C-B — "grouped feedbacks" for the same categories.  STATUS: TRUE
+  Evidence: src/feedbacks-core.js (764 lines) defines feedback option groups for
+  playlist, cue, active layer, target set, effect preset, layer preset, blend
+  mode, blend, transition, effects, plus workspace-level catalog feedbacks
+  (playlist_count, cue_count_total, layer_count, active_layer_count,
+  active_cue_count). feedbacks.js wires them via a live state getter
+  (getPvpVariablesState), so feedbacks read the polled state. Claim holds.
+
+C-C — three example variables resolve.  STATUS: TRUE
+  Evidence: playlist_{i}_cue_{j}_name, transport_{i}_time_remaining_clock, and
+  layer_{i}_opacity (via the _opacity suffix in addLayerValues) are all emitted
+  by variables-core.js. The README examples are real.
+
+C-D — "keeping the original PVP control actions intact".  STATUS: MOSTLY TRUE — 1 EXCEPTION
+  Evidence: 29 actions are defined in src/actions.js; the standard control set
+  (clear/mute/unmute/select/hide/unhide layer, select/trigger playlist, trigger
+  cue, trigger playlist/cue, trigger layer/playlist/cue, target set, layer
+  preset, effect preset, opacity absolute, track matte, etc.) is present and
+  uses the original doCommand path.
+  EXCEPTION: the RELATIVE opacity branch of setOpacity is broken — it calls
+  self.getRest()/self.postRest(), which are not defined in this fork, and uses
+  an undefined variable opt. See V1 below. Absolute opacity works; relative does
+  not. So "intact" is true except for this one regression.
+
+C-E — backup-instance fan-out (HELP.md claim).  STATUS: TRUE
+  Evidence: setPvpIps builds arrTargets with primary + backup when both validate
+  (isPortValid). doCommand loops arrTargets and posts to each. The "one action
+  hits both PVPs" behavior described in HELP.md is implemented.
+
+
+================================================================
+DEFECTS SURFACED WHILE VERIFYING
+================================================================
+
+V1 — Relative-opacity branch is broken (undefined methods + var). SEVERITY: HIGH
+  File: src/actions.js setOpacity (~305-328). self.getRest/self.postRest are
+  never defined; opt.idx/opt.opacity should be idx/opacity. Throws at runtime.
+  This is the one place the "actions intact" claim fails.
+  Fix: rewrite relative mode to read current opacity from polled state
+  (pvpVariablesState layer.opacity) and doCommand the new absolute value;
+  replace opt.* with idx/opacity.
+
+V2 — No HTTP timeouts on either command or poll path.  SEVERITY: MEDIUM
+  api.js (node-rest-client) and variables-api.js (fetch) both lack request
+  timeouts. A stalled PVP hangs commands and can freeze the poll loop via the
+  in-flight guard.
+  Fix: AbortSignal.timeout on fetch; requestConfig timeout on node-rest-client.
+
+V3 — Manifest metadata is placeholder.  SEVERITY: LOW (release-blocking for distribution)
+  File: companion/manifest.json — version "0.0.0", runtime apiVersion "0.0.0".
+  package.json says version "2.0.0". Mismatch; "0.0.0" will not pass Bitfocus
+  module submission and gives users no version signal.
+  Fix: set a real semver in both, align apiVersion to the @companion-module/base
+  version actually targeted (~1.4.1).
+
+
+================================================================
+NOTE
+================================================================
+The README is accurate about WHAT exists — the expanded variables and grouped
+feedbacks are all really there and wired to live polled state. The gap is not
+overstated features; it is one broken action branch (V1) and HTTP-robustness
+plus release-metadata polish (V2, V3). Deeper code-quality findings (TLS,
+encoding, fan-out, dual HTTP stacks) are in the independent scan, not visible
+from README claims alone.

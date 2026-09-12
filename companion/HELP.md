@@ -70,6 +70,40 @@ Number IDs are always interpreted as indexes, even if a layer or playlist has a 
 
 **Live Video:** A playlist ID of `-1` refers to the `Live Video` playlist.
 
+## Variables and Feedbacks
+
+This module also provides live variables and grouped feedbacks for PVP playlists, cues, layers, transport state, effects, transitions, target sets, blend modes, presets, and workspace status.
+
+Variables use this module's normal Companion namespace:
+
+```txt
+pvp
+```
+
+Examples:
+
+```txt
+$(pvp:playlist_0_cue_0_name)
+$(pvp:transport_0_playing_media_name)
+$(pvp:transport_0_time_remaining_clock)
+$(pvp:layer_0_opacity)
+$(pvp:workspace_current_media_names)
+```
+
+The first playlist, cue, layer, transport, effect, preset, or catalog item is numbered `0`, not `1`. For example, the top playlist is `playlist_0`, the first cue in that playlist is `cue_0`, and the first layer/transport is usually `layer_0` or `transport_0`.
+
+Available grouped feedbacks:
+
+- **Playlist condition**
+- **Cue condition**
+- **Layer condition**
+- **Transport condition**
+- **Workspace condition**
+- **Effect condition**
+- **Catalog condition**
+
+Each grouped feedback has dropdown fields for choosing what to compare, plus a comparison and expected value where needed.
+
 
 
 ## Actions
