@@ -33,6 +33,8 @@ class pvpInstance extends InstanceBase {
 			clearInterval(self.INTERVAL);
 			self.INTERVAL = null;
 		}
+
+		self.stopVariablesPolling();
 	}
 
 	async init(config) {
@@ -56,7 +58,7 @@ class pvpInstance extends InstanceBase {
 		this.initPresets();
 	
 		this.checkFeedbacks();
-		this.checkVariables();
+		this.startVariablesPolling();
 	}
 }
 
