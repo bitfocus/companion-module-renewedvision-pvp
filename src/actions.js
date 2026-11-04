@@ -629,6 +629,7 @@ module.exports = {
 				}
 			],
 			callback: async function (action) {
+				let idx = await self.parseVariablesInString(action.options.idx);
 				let sec = await self.parseVariablesInString(action.options.sec);
 		
 				sec = parseFloat(sec);

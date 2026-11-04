@@ -4,7 +4,7 @@
 	"main": "index.js",
 	"scripts": {
 		"build": "companion-module-build",
-		"test": "node --test test/*.test.js"
+		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"repository": {
 		"type": "git",
