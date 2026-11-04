@@ -9,7 +9,7 @@
 	"bugs": "https://github.com/bitfocus/companion-module-renewedvision-pvp/issues",
 	"maintainers": [
 		{
-			"name": "Per Røine",
+			"name": "Per R\u00f8ine",
 			"email": "per.roine@gmail.com"
 		},
 		{
@@ -21,7 +21,7 @@
 		"pvp"
 	],
 	"runtime": {
-		"type": "node18",
+		"type": "node26",
 		"api": "nodejs-ipc",
 		"apiVersion": "0.0.0",
 		"entrypoint": "../index.js"
